@@ -93,14 +93,12 @@ input.err { border-color:#e05555; }
     <p class="subtitle">الاستعلام عن وضع الاشتراك</p>
   </div>
   <div class="card">
-
     <div id="search">
       <label>رقم بطاقة الأحوال الوطنية</label>
       <input type="text" id="idInput" placeholder="أدخل رقم الهوية..." maxlength="10" />
       <div class="error-msg" id="errMsg"></div>
       <button class="btn" id="searchBtn" onclick="doSearch()">&#x1F50D; استعلام</button>
     </div>
-
     <div id="result">
       <div class="success-header">
         <div style="font-size:38px">&#x1F4CB;</div>
@@ -138,13 +136,11 @@ input.err { border-color:#e05555; }
       </div>
       <button class="btn-secondary" onclick="reset()">&#x1F504; استعلام جديد</button>
     </div>
-
   </div>
   <p class="footer">صندوق آل قريش التكافلي &bull; البيانات محدّثة من السجلات الرسمية</p>
 </div>
-
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycby1pq6f3Fwp7KmBz89YtRr7yoX9Bhc6UdtZz1XT8lFEjzthoPAOf3n_cf0jKWxEr-LCcA/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZCehWqYPxqFc2OzOWbraBPKItIzEMDes86Iv8bzy45qC_AXhieGLxgYntqKBzF6o6xg/exec";
 
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
