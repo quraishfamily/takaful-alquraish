@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صندوق آل قريش التكافلي</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  min-height:100vh;
+  background:linear-gradient(135deg,#0a1628,#1a3a5c);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Segoe UI',Tahoma,sans-serif; padding:20px;
+}
+.container { width:100%; max-width:460px; }
+.header { text-align:center; margin-bottom:32px; }
+.logo {
+  width:80px; height:80px; border-radius:50%;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);
+  margin:0 auto 16px; display:flex; align-items:center;
+  justify-content:center; font-size:36px;
+  box-shadow:0 4px 20px rgba(201,168,76,0.4);
+}
+h1 { color:#f0d080; font-size:22px; font-weight:bold; }
+.subtitle { color:#8ab4d4; font-size:14px; margin-top:6px; }
+.card {
+  background:rgba(255,255,255,0.05); border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1); padding:32px;
+}
+label { color:#c8dff0; font-size:14px; display:block; margin-bottom:10px; }
+input {
+  width:100%; padding:14px 16px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.08); color:#fff;
+  font-size:18px; letter-spacing:2px; outline:none; text-align:center;
+}
+input.err { border-color:#e05555; }
+.error-msg { color:#e07070; font-size:13px; margin-top:8px; text-align:center; display:none; }
+.btn {
+  width:100%; margin-top:20px; padding:14px; border-radius:12px;
+  border:none; cursor:pointer;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);
+  color:#1a1a1a; font-size:16px; font-weight:bold;
+}
+.btn:disabled { background:#444; color:#888; cursor:not-allowed; }
+.btn-secondary {
+  width:100%; margin-top:16px; padding:12px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:transparent; color:#8ab4d4; font-size:14px; cursor:pointer;
+}
+.info-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 0; border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.info-label { color:#8ab4d4; font-size:13px; }
+.info-value { color:#fff; font-size:14px; font-weight:600; }
+.stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:20px; }
+.stat-box { border-radius:14px; padding:16px; text-align:center; }
+.stat-green { background:rgba(126,212,126,0.1); border:1px solid rgba(126,212,126,0.3); }
+.stat-gold  { background:rgba(224,160,80,0.1);  border:1px solid rgba(224,160,80,0.3); }
+.num-green { font-size:28px; font-weight:bold; color:#7ed47e; }
+.num-gold  { font-size:28px; font-weight:bold; color:#f0c060; }
+.stat-label { font-size:12px; margin-top:4px; }
+.stat-sub   { font-size:11px; margin-top:2px; color:#888; }
+.badge { margin-top:16px; padding:12px 16px; border-radius:12px; text-align:center; font-size:14px; font-weight:bold; }
+.footer { text-align:center; color:rgba(255,255,255,0.3); font-size:12px; margin-top:16px; }
+#result { display:none; }
+.success-header { text-align:center; margin-bottom:24px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">&#x1F91D;</div>
+    <h1>صندوق آل قريش التكافلي</h1>
+    <p class="subtitle">الاستعلام عن وضع الاشتراك</p>
+  </div>
+  <div class="card">
+    <div id="search">
+      <label>رقم بطاقة الأحوال الوطنية</label>
+      <input type="text" id="idInput" placeholder="أدخل رقم الهوية..." maxlength="10" />
+      <div class="error-msg" id="errMsg"></div>
+      <button class="btn" id="searchBtn" onclick="doSearch()">&#x1F50D; استعلام</button>
+    </div>
+    <div id="result">
+      <div class="success-header">
+        <div style="font-size:40px">&#x2705;</div>
+        <p style="color:#7ed47e;font-size:14px;margin-top:6px">تم العثور على بيانات المشترك</p>
+      </div>
+      <div class="info-row"><span class="info-label">&#x1FAAA; رقم بطاقة الأحوال</span><span class="info-value" id="r-id"></span></div>
+      <div class="info-row"><span class="info-label">&#x1F464; الاسم الكامل</span><span class="info-value" id="r-name"></span></div>
+      <div class="info-row"><span class="info-label">&#x1F4F1; رقم الجوال</span><span class="info-value" id="r-phone"></span></div>
+      <div class="stats">
+        <div class="stat-box stat-green">
+          <div class="num-green" id="r-months"></div>
+          <div class="stat-label" style="color:#a0c4a0">شهر مدفوع</div>
+          <div class="stat-sub" id="r-last"></div>
+        </div>
+        <div class="stat-box stat-gold">
+          <div class="num-gold" id="r-amount"></div>
+          <div class="stat-label" style="color:#c4a060">ريال مدفوع</div>
+          <div class="stat-sub" id="r-calc"></div>
+        </div>
+      </div>
+      <div class="badge" id="r-badge"></div>
+      <button class="btn-secondary" onclick="reset()">&#x1F504; استعلام جديد</button>
+    </div>
+  </div>
+  <p class="footer">صندوق آل قريش التكافلي • البيانات من Google Sheet مباشرة</p>
+</div>
+<script>
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-G7JFls3qA25eNZnaNPP8wMfzhLTvt-l-9PSWR6m4btaX6mlNKQf43MaS5clCutlx/exec";
+var MONTHLY_FEE = 50;
+var MONTHS_AR = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+document.getElementById("idInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") doSearch();
+});
+
+function showErr(msg) {
+  var el = document.getElementById("errMsg");
+  el.textContent = msg;
+  el.style.display = "block";
+  document.getElementById("idInput").classList.add("err");
+}
+
+function hideErr() {
+  document.getElementById("errMsg").style.display = "none";
+  document.getElementById("idInput").classList.remove("err");
+}
+
+function doSearch() {
+  hideErr();
+  var id = document.getElementById("idInput").value.trim();
+  if (!id) { showErr("الرجاء إدخال رقم بطاقة الأحوال"); return; }
+  var btn = document.getElementById("searchBtn");
+  btn.disabled = true;
+  btn.textContent = "جارٍ البحث...";
+  var cbName = "cb_" + Date.now();
+  var script = document.createElement("script");
+  script.src = SCRIPT_URL + "?id=" + encodeURIComponent(id) + "&callback=" + cbName;
+  window[cbName] = function(data) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    if (data.error === "not_found") {
+      showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
+    } else {
+      showResult(data);
+    }
+  };
+  script.onerror = function() {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
+  };
+  document.body.appendChild(script);
+}
+
+function showResult(data) {
+  var d = new Date();
+  var lastMonth = MONTHS_AR[d.getMonth()] + " " + d.getFullYear();
+  var months = Number(data.monthsPaid);
+  document.getElementById("r-id").textContent    = data.id;
+  document.getElementById("r-name").textContent  = data.name;
+  document.getElementById("r-phone").textContent = data.phone;
+  document.getElementById("r-months").textContent = months;
+  document.getElementById("r-last").textContent  = months > 0 ? "آخره: " + lastMonth : "لا يوجد";
+  document.getElementById("r-amount").textContent = months * MONTHLY_FEE;
+  document.getElementById("r-calc").textContent  = MONTHLY_FEE + " x " + months + " شهر";
+  var badge = document.getElementById("r-badge");
+  if (months === 0) {
+    badge.textContent = "لم يتم الدفع بعد";
+    badge.style.cssText = "background:rgba(220,60,60,0.15);border:1px solid rgba(220,60,60,0.3);color:#e07070;margin-top:16px;padding:12px 16px;border-radius:12px;text-align:center;font-size:14px;font-weight:bold;";
+  } else if (months < 3) {
+    badge.textContent = "الاشتراك يحتاج تجديد";
+    badge.style.cssText = "background:rgba(220,160,60,0.15);border:1px solid rgba(220,160,60,0.3);color:#e0c060;margin-top:16px;padding:12px 16px;border-radius:12px;text-align:center;font-size:14px;font-weight:bold;";
+  } else {
+    badge.textContent = "الاشتراك نشط";
+    badge.style.cssText = "background:rgba(60,180,60,0.15);border:1px solid rgba(60,180,60,0.3);color:#70e070;margin-top:16px;padding:12px 16px;border-radius:12px;text-align:center;font-size:14px;font-weight:bold;";
+  }
+  document.getElementById("search").style.display = "none";
+  document.getElementById("result").style.display = "block";
+}
+
+function reset() {
+  document.getElementById("idInput").value = "";
+  hideErr();
+  document.getElementById("search").style.display = "block";
+  document.getElementById("result").style.display = "none";
+}
+</script>
+</body>
+</html>
