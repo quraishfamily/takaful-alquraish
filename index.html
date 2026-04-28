@@ -59,6 +59,22 @@ input.err { border-color:#e05555; }
   margin-top:16px; padding:14px 16px; border-radius:14px;
   text-align:center; font-size:15px; font-weight:bold;
 }
+.warning-box {
+  margin-top:12px; padding:14px 16px; border-radius:14px;
+  background:rgba(255,165,0,0.1); border:1px solid rgba(255,165,0,0.35);
+  display:none;
+}
+.warning-title {
+  color:#ffb347; font-size:14px; font-weight:bold; margin-bottom:6px;
+}
+.warning-body {
+  color:#ffd080; font-size:13px; line-height:1.7;
+}
+.remaining-months {
+  display:inline-block; background:rgba(255,165,0,0.2);
+  border-radius:8px; padding:4px 12px; margin-top:6px;
+  color:#ffb347; font-size:20px; font-weight:bold;
+}
 .last-payment {
   margin-top:16px; border-radius:14px; overflow:hidden;
   border:1px solid rgba(255,255,255,0.1);
@@ -112,7 +128,20 @@ input.err { border-color:#e05555; }
         <span class="info-label">&#x1F4F1; رقم الجوال</span>
         <span class="info-value" id="r-phone"></span>
       </div>
+
       <div class="badge" id="r-badge"></div>
+
+      <!-- صندوق التنبيه -->
+      <div class="warning-box" id="r-warning">
+        <div class="warning-title">&#x26A0;&#xFE0F; تنبيه — اشتراكك يقترب من الانتهاء</div>
+        <div class="warning-body">
+          تبقّى على انتهاء اشتراكك:
+          <div class="remaining-months" id="r-remaining"></div>
+          <span style="color:#ffd080;font-size:13px"> شهر</span>
+          <br>يُرجى التواصل مع إدارة الصندوق لتجديد اشتراكك.
+        </div>
+      </div>
+
       <div class="last-payment">
         <div class="last-payment-title">&#x1F4B3; آخر عملية سداد</div>
         <div class="last-payment-body">
@@ -206,12 +235,23 @@ function showResult(data) {
   document.getElementById("r-months").textContent = data.months;
 
   var badge = document.getElementById("r-badge");
+  var warning = document.getElementById("r-warning");
+
   if (data.active) {
     badge.textContent = "✅ اشتراكك نشط";
     badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(60,180,60,0.15);border:1px solid rgba(60,180,60,0.3);color:#70e070;";
+
+    // أظهر التنبيه إذا تبقّى شهران أو أقل
+    if (data.monthsRemaining <= 2 && data.monthsRemaining > 0) {
+      document.getElementById("r-remaining").textContent = data.monthsRemaining;
+      warning.style.display = "block";
+    } else {
+      warning.style.display = "none";
+    }
   } else {
     badge.textContent = "⚠️ اشتراكك غير نشط";
     badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(220,60,60,0.15);border:1px solid rgba(220,60,60,0.3);color:#e07070;";
+    warning.style.display = "none";
   }
 
   document.getElementById("search").style.display = "none";
