@@ -64,12 +64,8 @@ input.err { border-color:#e05555; }
   background:rgba(255,165,0,0.1); border:1px solid rgba(255,165,0,0.35);
   display:none;
 }
-.warning-title {
-  color:#ffb347; font-size:14px; font-weight:bold; margin-bottom:6px;
-}
-.warning-body {
-  color:#ffd080; font-size:13px; line-height:1.7;
-}
+.warning-title { color:#ffb347; font-size:14px; font-weight:bold; margin-bottom:6px; }
+.warning-body { color:#ffd080; font-size:13px; line-height:1.7; }
 .remaining-months {
   display:inline-block; background:rgba(255,165,0,0.2);
   border-radius:8px; padding:4px 12px; margin-top:6px;
@@ -128,10 +124,7 @@ input.err { border-color:#e05555; }
         <span class="info-label">&#x1F4F1; رقم الجوال</span>
         <span class="info-value" id="r-phone"></span>
       </div>
-
       <div class="badge" id="r-badge"></div>
-
-      <!-- صندوق التنبيه -->
       <div class="warning-box" id="r-warning">
         <div class="warning-title">&#x26A0;&#xFE0F; تنبيه — اشتراكك يقترب من الانتهاء</div>
         <div class="warning-body">
@@ -141,7 +134,6 @@ input.err { border-color:#e05555; }
           <br>يُرجى التواصل مع إدارة الصندوق لتجديد اشتراكك.
         </div>
       </div>
-
       <div class="last-payment">
         <div class="last-payment-title">&#x1F4B3; آخر عملية سداد</div>
         <div class="last-payment-body">
@@ -169,7 +161,7 @@ input.err { border-color:#e05555; }
   <p class="footer">صندوق آل قريش التكافلي &bull; البيانات محدّثة من السجلات الرسمية</p>
 </div>
 <script>
-var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZCehWqYPxqFc2OzOWbraBPKItIzEMDes86Iv8bzy45qC_AXhieGLxgYntqKBzF6o6xg/exec";
+var BASE_URL = "https://script.google.com/macros/s/AKfycbzZCehWqYPxqFc2OzOWbraBPKItIzEMDes86Iv8bzy45qC_AXhieGLxgYntqKBzF6o6xg/exec";
 
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
@@ -194,28 +186,27 @@ function doSearch() {
   var btn = document.getElementById("searchBtn");
   btn.disabled = true;
   btn.textContent = "جارٍ البحث...";
-  var cbName = "cb_" + Date.now();
-  var script = document.createElement("script");
-  script.src = SCRIPT_URL + "?id=" + encodeURIComponent(id) + "&callback=" + cbName;
-  window[cbName] = function(data) {
-    delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "استعلام";
-    if (data.error === "not_found") {
-      showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
-    } else {
-      showResult(data);
-    }
-  };
-  script.onerror = function() {
-    delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "استعلام";
-    showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
-  };
-  document.body.appendChild(script);
+
+  var targetUrl = BASE_URL + "?id=" + encodeURIComponent(id);
+  var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
+
+  fetch(proxyUrl)
+    .then(function(res) { return res.json(); })
+    .then(function(wrapper) {
+      var data = JSON.parse(wrapper.contents);
+      btn.disabled = false;
+      btn.textContent = "استعلام";
+      if (data.error === "not_found") {
+        showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
+      } else {
+        showResult(data);
+      }
+    })
+    .catch(function() {
+      btn.disabled = false;
+      btn.textContent = "استعلام";
+      showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
+    });
 }
 
 function formatDate(d) {
@@ -240,8 +231,6 @@ function showResult(data) {
   if (data.active) {
     badge.textContent = "✅ اشتراكك نشط";
     badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(60,180,60,0.15);border:1px solid rgba(60,180,60,0.3);color:#70e070;";
-
-    // أظهر التنبيه إذا تبقّى شهران أو أقل
     if (data.monthsRemaining <= 2 && data.monthsRemaining > 0) {
       document.getElementById("r-remaining").textContent = data.monthsRemaining;
       warning.style.display = "block";
