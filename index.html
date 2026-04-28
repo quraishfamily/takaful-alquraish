@@ -55,14 +55,10 @@ input.err { border-color:#e05555; }
 }
 .info-label { color:#8ab4d4; font-size:13px; }
 .info-value { color:#fff; font-size:14px; font-weight:600; }
-.badge {
-  margin-top:16px; padding:14px 16px; border-radius:14px;
-  text-align:center; font-size:15px; font-weight:bold;
-}
+.badge { margin-top:16px; padding:14px 16px; border-radius:14px; text-align:center; font-size:15px; font-weight:bold; }
 .warning-box {
   margin-top:12px; padding:14px 16px; border-radius:14px;
-  background:rgba(255,165,0,0.1); border:1px solid rgba(255,165,0,0.35);
-  display:none;
+  background:rgba(255,165,0,0.1); border:1px solid rgba(255,165,0,0.35); display:none;
 }
 .warning-title { color:#ffb347; font-size:14px; font-weight:bold; margin-bottom:6px; }
 .warning-body { color:#ffd080; font-size:13px; line-height:1.7; }
@@ -71,20 +67,14 @@ input.err { border-color:#e05555; }
   border-radius:8px; padding:4px 12px; margin-top:6px;
   color:#ffb347; font-size:20px; font-weight:bold;
 }
-.last-payment {
-  margin-top:16px; border-radius:14px; overflow:hidden;
-  border:1px solid rgba(255,255,255,0.1);
-}
+.last-payment { margin-top:16px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
 .last-payment-title {
   background:rgba(255,255,255,0.07); padding:10px 16px;
   color:#c8dff0; font-size:13px; font-weight:bold;
   border-bottom:1px solid rgba(255,255,255,0.07);
 }
 .last-payment-body { padding:12px 16px; }
-.pay-row {
-  display:flex; justify-content:space-between;
-  padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05);
-}
+.pay-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
 .pay-row:last-child { border-bottom:none; }
 .pay-label { color:#8ab4d4; font-size:12px; }
 .pay-value { color:#fff; font-size:13px; font-weight:600; }
@@ -161,7 +151,7 @@ input.err { border-color:#e05555; }
   <p class="footer">صندوق آل قريش التكافلي &bull; البيانات محدّثة من السجلات الرسمية</p>
 </div>
 <script>
-var BASE_URL = "https://script.google.com/macros/s/AKfycbzZCehWqYPxqFc2OzOWbraBPKItIzEMDes86Iv8bzy45qC_AXhieGLxgYntqKBzF6o6xg/exec";
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZCehWqYPxqFc2OzOWbraBPKItIzEMDes86Iv8bzy45qC_AXhieGLxgYntqKBzF6o6xg/exec";
 
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
@@ -186,27 +176,28 @@ function doSearch() {
   var btn = document.getElementById("searchBtn");
   btn.disabled = true;
   btn.textContent = "جارٍ البحث...";
-
-  var targetUrl = BASE_URL + "?id=" + encodeURIComponent(id);
-  var proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
-
-  fetch(proxyUrl)
-    .then(function(res) { return res.json(); })
-    .then(function(wrapper) {
-      var data = JSON.parse(wrapper.contents);
-      btn.disabled = false;
-      btn.textContent = "استعلام";
-      if (data.error === "not_found") {
-        showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
-      } else {
-        showResult(data);
-      }
-    })
-    .catch(function() {
-      btn.disabled = false;
-      btn.textContent = "استعلام";
-      showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
-    });
+  var cbName = "cb_" + Date.now();
+  var script = document.createElement("script");
+  script.src = SCRIPT_URL + "?id=" + encodeURIComponent(id) + "&callback=" + cbName;
+  window[cbName] = function(data) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    if (data.error === "not_found") {
+      showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
+    } else {
+      showResult(data);
+    }
+  };
+  script.onerror = function() {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
+  };
+  document.body.appendChild(script);
 }
 
 function formatDate(d) {
