@@ -1,79 +1,249 @@
-var MONTH_MAP = {
-  "يناير": 0, "فبراير": 1, "مارس": 2, "أبريل": 3,
-  "مايو": 4, "يونيو": 5, "يوليو": 6, "أغسطس": 7,
-  "سبتمبر": 8, "أكتوبر": 9, "نوفمبر": 10, "ديسمبر": 11
-};
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صندوق آل قريش التكافلي</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  min-height:100vh;
+  background:linear-gradient(135deg,#0a1628,#1a3a5c);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Segoe UI',Tahoma,sans-serif; padding:20px;
+}
+.container { width:100%; max-width:480px; }
+.header { text-align:center; margin-bottom:28px; }
+.logo {
+  width:80px; height:80px; border-radius:50%;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);
+  margin:0 auto 14px; display:flex; align-items:center;
+  justify-content:center; font-size:36px;
+  box-shadow:0 4px 20px rgba(201,168,76,0.4);
+}
+h1 { color:#f0d080; font-size:22px; font-weight:bold; }
+.subtitle { color:#8ab4d4; font-size:14px; margin-top:6px; }
+.card {
+  background:rgba(255,255,255,0.05); border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1); padding:28px;
+}
+label { color:#c8dff0; font-size:14px; display:block; margin-bottom:10px; }
+input {
+  width:100%; padding:14px 16px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.08); color:#fff;
+  font-size:18px; letter-spacing:2px; outline:none; text-align:center;
+}
+input.err { border-color:#e05555; }
+.error-msg { color:#e07070; font-size:13px; margin-top:8px; text-align:center; display:none; }
+.btn {
+  width:100%; margin-top:18px; padding:14px; border-radius:12px;
+  border:none; cursor:pointer;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);
+  color:#1a1a1a; font-size:16px; font-weight:bold;
+}
+.btn:disabled { background:#444; color:#888; cursor:not-allowed; }
+.btn-secondary {
+  width:100%; margin-top:14px; padding:12px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.15);
+  background:transparent; color:#8ab4d4; font-size:14px; cursor:pointer;
+}
+.success-header { text-align:center; margin-bottom:20px; }
+.info-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.info-label { color:#8ab4d4; font-size:13px; }
+.info-value { color:#fff; font-size:14px; font-weight:600; }
+.badge { margin-top:16px; padding:14px 16px; border-radius:14px; text-align:center; font-size:15px; font-weight:bold; }
+.warning-box {
+  margin-top:12px; padding:14px 16px; border-radius:14px;
+  background:rgba(255,165,0,0.1); border:1px solid rgba(255,165,0,0.35); display:none;
+}
+.warning-title { color:#ffb347; font-size:14px; font-weight:bold; margin-bottom:6px; }
+.warning-body { color:#ffd080; font-size:13px; line-height:1.7; }
+.remaining-months {
+  display:inline-block; background:rgba(255,165,0,0.2);
+  border-radius:8px; padding:4px 12px; margin-top:6px;
+  color:#ffb347; font-size:20px; font-weight:bold;
+}
+.last-payment { margin-top:16px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+.last-payment-title {
+  background:rgba(255,255,255,0.07); padding:10px 16px;
+  color:#c8dff0; font-size:13px; font-weight:bold;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.last-payment-body { padding:12px 16px; }
+.pay-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.pay-row:last-child { border-bottom:none; }
+.pay-label { color:#8ab4d4; font-size:12px; }
+.pay-value { color:#fff; font-size:13px; font-weight:600; }
+.months-box {
+  margin-top:6px; background:rgba(255,255,255,0.04);
+  border-radius:10px; padding:10px 14px;
+  color:#c8dff0; font-size:13px; line-height:1.8;
+}
+.footer { text-align:center; color:rgba(255,255,255,0.3); font-size:12px; margin-top:16px; }
+#result { display:none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">&#x1F91D;</div>
+    <h1>صندوق آل قريش التكافلي</h1>
+    <p class="subtitle">الاستعلام عن وضع الاشتراك</p>
+  </div>
+  <div class="card">
+    <div id="search">
+      <label>رقم بطاقة الأحوال الوطنية</label>
+      <input type="text" id="idInput" placeholder="أدخل رقم الهوية..." maxlength="10" />
+      <div class="error-msg" id="errMsg"></div>
+      <button class="btn" id="searchBtn" onclick="doSearch()">&#x1F50D; استعلام</button>
+    </div>
+    <div id="result">
+      <div class="success-header">
+        <div style="font-size:38px">&#x1F4CB;</div>
+        <p style="color:#7ed47e;font-size:14px;margin-top:6px">تم العثور على بيانات المشترك</p>
+      </div>
+      <div class="info-row">
+        <span class="info-label">&#x1FAAA; رقم بطاقة الأحوال</span>
+        <span class="info-value" id="r-id"></span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">&#x1F4F1; رقم الجوال</span>
+        <span class="info-value" id="r-phone"></span>
+      </div>
+      <div class="badge" id="r-badge"></div>
+      <div class="warning-box" id="r-warning">
+        <div class="warning-title">&#x26A0;&#xFE0F; تنبيه — اشتراكك يقترب من الانتهاء</div>
+        <div class="warning-body">
+          تبقّى على انتهاء اشتراكك:
+          <div class="remaining-months" id="r-remaining"></div>
+          <span style="color:#ffd080;font-size:13px"> شهر</span>
+          <br>يُرجى التواصل مع إدارة الصندوق لتجديد اشتراكك.
+        </div>
+      </div>
+      <div class="last-payment">
+        <div class="last-payment-title">&#x1F4B3; آخر عملية سداد</div>
+        <div class="last-payment-body">
+          <div class="pay-row">
+            <span class="pay-label">السنة المالية</span>
+            <span class="pay-value" id="r-year"></span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label">المبلغ المستلم</span>
+            <span class="pay-value" id="r-amount"></span>
+          </div>
+          <div class="pay-row">
+            <span class="pay-label">تاريخ السداد</span>
+            <span class="pay-value" id="r-date"></span>
+          </div>
+          <div class="pay-row" style="border-bottom:none">
+            <span class="pay-label">الأشهر المسددة</span>
+          </div>
+          <div class="months-box" id="r-months"></div>
+        </div>
+      </div>
+      <button class="btn-secondary" onclick="reset()">&#x1F504; استعلام جديد</button>
+    </div>
+  </div>
+  <p class="footer">صندوق آل قريش التكافلي &bull; البيانات محدّثة من السجلات الرسمية</p>
+</div>
+<script>
+var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzAGQzTGx5OiIY9ShFCJMmqu_FgeI1K8488fpUp09BlVs9iaBjteEcRSBXh9E5ZqTK0g/exec";
 
-function getLastMonth(monthsStr, year) {
-  if (!monthsStr) return null;
-  var parts = monthsStr.toString().split(",");
-  var lastPart = parts[parts.length - 1].trim();
-  var monthIndex = MONTH_MAP[lastPart];
-  if (monthIndex === undefined) return null;
-  return new Date(parseInt(year), monthIndex, 1);
+document.getElementById("idInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") doSearch();
+});
+
+function showErr(msg) {
+  var el = document.getElementById("errMsg");
+  el.textContent = msg;
+  el.style.display = "block";
+  document.getElementById("idInput").classList.add("err");
 }
 
-function doGet(e) {
-  var id = e.parameter.id;
-  var callback = e.parameter.callback;
-  var sheet = SpreadsheetApp.openById("1wNqbaUuFWbklnpe5jLUkycYEZhK_vVjKI04ewXd7tDQ").getActiveSheet();
-  var data = sheet.getDataRange().getValues();
+function hideErr() {
+  document.getElementById("errMsg").style.display = "none";
+  document.getElementById("idInput").classList.remove("err");
+}
 
-  var matches = [];
-  for (var i = 1; i < data.length; i++) {
-    if (String(data[i][9]).trim() === String(id).trim()) {
-      matches.push({
-        date:   data[i][2],
-        phone:  String(data[i][4]),
-        year:   String(data[i][5]),
-        amount: String(data[i][7]),
-        months: String(data[i][8]),
-        id:     String(data[i][9])
-      });
+function doSearch() {
+  hideErr();
+  var id = document.getElementById("idInput").value.trim();
+  if (!id) { showErr("الرجاء إدخال رقم بطاقة الأحوال"); return; }
+  var btn = document.getElementById("searchBtn");
+  btn.disabled = true;
+  btn.textContent = "جارٍ البحث...";
+  var cbName = "cb_" + Date.now();
+  var script = document.createElement("script");
+  script.src = SCRIPT_URL + "?id=" + encodeURIComponent(id) + "&callback=" + cbName;
+  window[cbName] = function(data) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    if (data.error === "not_found") {
+      showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
+    } else {
+      showResult(data);
     }
-  }
+  };
+  script.onerror = function() {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "استعلام";
+    showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
+  };
+  document.body.appendChild(script);
+}
 
-  var result;
-  if (matches.length === 0) {
-    result = { error: "not_found" };
+function formatDate(d) {
+  if (!d) return "";
+  var dt = new Date(d);
+  if (isNaN(dt)) return String(d);
+  var months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  return dt.getDate() + " " + months[dt.getMonth()] + " " + dt.getFullYear();
+}
+
+function showResult(data) {
+  document.getElementById("r-id").textContent     = data.id;
+  document.getElementById("r-phone").textContent  = data.phone;
+  document.getElementById("r-year").textContent   = data.year;
+  document.getElementById("r-amount").textContent = data.amount + " ريال";
+  document.getElementById("r-date").textContent   = formatDate(data.lastDate);
+  document.getElementById("r-months").textContent = data.months;
+
+  var badge = document.getElementById("r-badge");
+  var warning = document.getElementById("r-warning");
+
+  if (data.active) {
+    badge.textContent = "✅ اشتراكك نشط";
+    badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(60,180,60,0.15);border:1px solid rgba(60,180,60,0.3);color:#70e070;";
+    if (data.monthsRemaining <= 2 && data.monthsRemaining > 0) {
+      document.getElementById("r-remaining").textContent = data.monthsRemaining;
+      warning.style.display = "block";
+    } else {
+      warning.style.display = "none";
+    }
   } else {
-    matches.sort(function(a, b) {
-      return new Date(b.date) - new Date(a.date);
-    });
-    var last = matches[0];
-
-    var lastPaidMonthDate = getLastMonth(last.months, last.year);
-    var now = new Date();
-    var active = false;
-    var monthsRemaining = 0;
-
-    if (lastPaidMonthDate) {
-      var expiryDate = new Date(lastPaidMonthDate.getFullYear(), lastPaidMonthDate.getMonth() + 6, 1);
-      var diffMonths = (expiryDate.getFullYear() - now.getFullYear()) * 12
-                     + (expiryDate.getMonth() - now.getMonth());
-      active = diffMonths > 0;
-      monthsRemaining = diffMonths > 0 ? diffMonths : 0;
-    }
-
-    result = {
-      id:              last.id,
-      phone:           last.phone,
-      year:            last.year,
-      amount:          last.amount,
-      months:          last.months,
-      lastDate:        last.date,
-      active:          active,
-      monthsRemaining: monthsRemaining
-    };
+    badge.textContent = "⚠️ اشتراكك غير نشط";
+    badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(220,60,60,0.15);border:1px solid rgba(220,60,60,0.3);color:#e07070;";
+    warning.style.display = "none";
   }
 
-  if (callback) {
-    return ContentService
-      .createTextOutput(callback + "(" + JSON.stringify(result) + ")")
-      .setMimeType(ContentService.MimeType.JAVASCRIPT);
-  }
-
-  return ContentService
-    .createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
+  document.getElementById("search").style.display = "none";
+  document.getElementById("result").style.display = "block";
 }
+
+function reset() {
+  document.getElementById("idInput").value = "";
+  hideErr();
+  document.getElementById("search").style.display = "block";
+  document.getElementById("result").style.display = "none";
+}
+</script>
+</body>
+</html>
