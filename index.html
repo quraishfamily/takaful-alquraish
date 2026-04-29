@@ -32,8 +32,9 @@ input {
   width:100%; padding:14px 16px; border-radius:12px;
   border:1px solid rgba(255,255,255,0.15);
   background:rgba(255,255,255,0.08); color:#fff;
-  font-size:18px; letter-spacing:2px; outline:none; text-align:center;
+  font-size:16px; outline:none; text-align:center;
 }
+input#idInput { font-size:18px; letter-spacing:2px; }
 input.err { border-color:#e05555; }
 .error-msg { color:#e07070; font-size:13px; margin-top:8px; text-align:center; display:none; }
 .btn {
@@ -48,6 +49,13 @@ input.err { border-color:#e05555; }
   border:1px solid rgba(255,255,255,0.15);
   background:transparent; color:#8ab4d4; font-size:14px; cursor:pointer;
 }
+.btn-email {
+  width:100%; margin-top:14px; padding:12px; border-radius:12px;
+  border:none; cursor:pointer;
+  background:rgba(100,160,255,0.15); border:1px solid rgba(100,160,255,0.3);
+  color:#8ab4d4; font-size:14px; font-weight:bold;
+}
+.btn-email:disabled { opacity:0.5; cursor:not-allowed; }
 .success-header { text-align:center; margin-bottom:20px; }
 .info-row {
   display:flex; justify-content:space-between; align-items:center;
@@ -82,6 +90,16 @@ input.err { border-color:#e05555; }
   margin-top:6px; background:rgba(255,255,255,0.04);
   border-radius:10px; padding:10px 14px;
   color:#c8dff0; font-size:13px; line-height:1.8;
+}
+.email-section {
+  margin-top:16px; padding:16px; border-radius:14px;
+  background:rgba(100,160,255,0.05); border:1px solid rgba(100,160,255,0.15);
+}
+.email-section label { color:#8ab4d4; font-size:13px; margin-bottom:8px; }
+.email-success {
+  display:none; margin-top:10px; padding:10px; border-radius:10px;
+  background:rgba(60,180,60,0.15); border:1px solid rgba(60,180,60,0.3);
+  color:#70e070; font-size:13px; text-align:center;
 }
 .footer { text-align:center; color:rgba(255,255,255,0.3); font-size:12px; margin-top:16px; }
 #result { display:none; }
@@ -145,6 +163,15 @@ input.err { border-color:#e05555; }
           <div class="months-box" id="r-months"></div>
         </div>
       </div>
+
+      <!-- قسم الإيميل -->
+      <div class="email-section">
+        <label>&#x1F4E7; استلم ملخص اشتراكك على بريدك الإلكتروني</label>
+        <input type="email" id="emailInput" placeholder="أدخل بريدك الإلكتروني..." />
+        <button class="btn-email" id="emailBtn" onclick="sendEmail()">&#x2709;&#xFE0F; إرسال الملخص</button>
+        <div class="email-success" id="emailSuccess">✅ تم إرسال الملخص إلى بريدك الإلكتروني بنجاح!</div>
+      </div>
+
       <button class="btn-secondary" onclick="reset()">&#x1F504; استعلام جديد</button>
     </div>
   </div>
@@ -152,6 +179,7 @@ input.err { border-color:#e05555; }
 </div>
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzAGQzTGx5OiIY9ShFCJMmqu_FgeI1K8488fpUp09BlVs9iaBjteEcRSBXh9E5ZqTK0g/exec";
+var currentData = null;
 
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
@@ -187,6 +215,7 @@ function doSearch() {
     if (data.error === "not_found") {
       showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
     } else {
+      currentData = data;
       showResult(data);
     }
   };
@@ -196,6 +225,54 @@ function doSearch() {
     btn.disabled = false;
     btn.textContent = "استعلام";
     showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
+  };
+  document.body.appendChild(script);
+}
+
+function sendEmail() {
+  var email = document.getElementById("emailInput").value.trim();
+  if (!email || !email.includes("@")) {
+    alert("الرجاء إدخال بريد إلكتروني صحيح");
+    return;
+  }
+  var btn = document.getElementById("emailBtn");
+  btn.disabled = true;
+  btn.textContent = "جارٍ الإرسال...";
+
+  var d = currentData;
+  var cbName = "cbEmail_" + Date.now();
+  var script = document.createElement("script");
+  script.src = SCRIPT_URL
+    + "?action=sendEmail"
+    + "&email=" + encodeURIComponent(email)
+    + "&id=" + encodeURIComponent(d.id)
+    + "&phone=" + encodeURIComponent(d.phone)
+    + "&year=" + encodeURIComponent(d.year)
+    + "&amount=" + encodeURIComponent(d.amount)
+    + "&months=" + encodeURIComponent(d.months)
+    + "&lastDate=" + encodeURIComponent(d.lastDate)
+    + "&active=" + encodeURIComponent(d.active)
+    + "&remaining=" + encodeURIComponent(d.monthsRemaining)
+    + "&callback=" + cbName;
+
+  window[cbName] = function(res) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "إرسال الملخص";
+    if (res.success) {
+      document.getElementById("emailSuccess").style.display = "block";
+      document.getElementById("emailInput").value = "";
+    } else {
+      alert("حدث خطأ في إرسال الإيميل، يرجى المحاولة مجدداً");
+    }
+  };
+  script.onerror = function() {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    btn.disabled = false;
+    btn.textContent = "إرسال الملخص";
+    alert("حدث خطأ في الاتصال");
   };
   document.body.appendChild(script);
 }
@@ -215,6 +292,7 @@ function showResult(data) {
   document.getElementById("r-amount").textContent = data.amount + " ريال";
   document.getElementById("r-date").textContent   = formatDate(data.lastDate);
   document.getElementById("r-months").textContent = data.months;
+  document.getElementById("emailSuccess").style.display = "none";
 
   var badge = document.getElementById("r-badge");
   var warning = document.getElementById("r-warning");
@@ -239,7 +317,10 @@ function showResult(data) {
 }
 
 function reset() {
+  currentData = null;
   document.getElementById("idInput").value = "";
+  document.getElementById("emailInput").value = "";
+  document.getElementById("emailSuccess").style.display = "none";
   hideErr();
   document.getElementById("search").style.display = "block";
   document.getElementById("result").style.display = "none";
