@@ -101,6 +101,10 @@ input.err { border-color:#e05555; }
   background:rgba(60,180,60,0.15); border:1px solid rgba(60,180,60,0.3);
   color:#70e070; font-size:13px; text-align:center;
 }
+.query-date {
+  margin-top:16px; text-align:center;
+  color:rgba(255,255,255,0.3); font-size:11px;
+}
 .footer { text-align:center; color:rgba(255,255,255,0.3); font-size:12px; margin-top:16px; }
 #result { display:none; }
 </style>
@@ -164,6 +168,9 @@ input.err { border-color:#e05555; }
         </div>
       </div>
 
+      <!-- تاريخ الاستعلام -->
+      <div class="query-date" id="r-query-date"></div>
+
       <!-- قسم الإيميل -->
       <div class="email-section">
         <label>&#x1F4E7; استلم ملخص اشتراكك على بريدك الإلكتروني</label>
@@ -195,6 +202,16 @@ function showErr(msg) {
 function hideErr() {
   document.getElementById("errMsg").style.display = "none";
   document.getElementById("idInput").classList.remove("err");
+}
+
+function getNowArabic() {
+  var d = new Date();
+  var months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var h = d.getHours(), m = d.getMinutes();
+  var ampm = h >= 12 ? "م" : "ص";
+  h = h % 12 || 12;
+  m = m < 10 ? "0" + m : m;
+  return "تاريخ الاستعلام: " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear() + " — " + h + ":" + m + " " + ampm;
 }
 
 function doSearch() {
@@ -231,14 +248,10 @@ function doSearch() {
 
 function sendEmail() {
   var email = document.getElementById("emailInput").value.trim();
-  if (!email || !email.includes("@")) {
-    alert("الرجاء إدخال بريد إلكتروني صحيح");
-    return;
-  }
+  if (!email || !email.includes("@")) { alert("الرجاء إدخال بريد إلكتروني صحيح"); return; }
   var btn = document.getElementById("emailBtn");
   btn.disabled = true;
   btn.textContent = "جارٍ الإرسال...";
-
   var d = currentData;
   var cbName = "cbEmail_" + Date.now();
   var script = document.createElement("script");
@@ -254,7 +267,6 @@ function sendEmail() {
     + "&active=" + encodeURIComponent(d.active)
     + "&remaining=" + encodeURIComponent(d.monthsRemaining)
     + "&callback=" + cbName;
-
   window[cbName] = function(res) {
     delete window[cbName];
     if (script.parentNode) script.parentNode.removeChild(script);
@@ -292,6 +304,7 @@ function showResult(data) {
   document.getElementById("r-amount").textContent = data.amount + " ريال";
   document.getElementById("r-date").textContent   = formatDate(data.lastDate);
   document.getElementById("r-months").textContent = data.months;
+  document.getElementById("r-query-date").textContent = getNowArabic();
   document.getElementById("emailSuccess").style.display = "none";
 
   var badge = document.getElementById("r-badge");
