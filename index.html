@@ -189,6 +189,15 @@ input.err { border-color:#e05555; }
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzAGQzTGx5OiIY9ShFCJMmqu_FgeI1K8488fpUp09BlVs9iaBjteEcRSBXh9E5ZqTK0g/exec";
 var currentData = null;
 
+function sendHeight() {
+  var h = document.body.scrollHeight;
+  window.parent.postMessage({ iframeHeight: h }, "*");
+}
+window.addEventListener("load", sendHeight);
+window.addEventListener("resize", sendHeight);
+var obs = new MutationObserver(sendHeight);
+obs.observe(document.body, { childList: true, subtree: true });
+
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
 });
