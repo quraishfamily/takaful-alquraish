@@ -107,9 +107,169 @@ input.err { border-color:#e05555; }
 }
 .footer { text-align:center; color:rgba(255,255,255,0.3); font-size:12px; margin-top:16px; }
 #result { display:none; }
+
+/* ===== أيقونة الأدمن الخفية ===== */
+#admin-icon {
+  position:fixed; bottom:16px; left:16px;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:14px; opacity:0.35; transition:opacity 0.2s;
+  z-index:100;
+}
+#admin-icon:hover { opacity:0.7; }
+
+/* ===== مودال PIN ===== */
+#pin-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.7); z-index:200;
+  align-items:center; justify-content:center;
+}
+#pin-modal.open { display:flex; }
+.pin-box {
+  background:linear-gradient(135deg,#0d1f3c,#1a3a5c);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:20px; padding:30px 28px; width:300px; text-align:center;
+}
+.pin-title { color:#f0d080; font-size:16px; font-weight:bold; margin-bottom:6px; }
+.pin-sub { color:#8ab4d4; font-size:12px; margin-bottom:20px; }
+.pin-dots { display:flex; justify-content:center; gap:12px; margin-bottom:20px; }
+.pin-dot {
+  width:14px; height:14px; border-radius:50%;
+  border:2px solid rgba(255,255,255,0.3); background:transparent;
+  transition:background 0.15s;
+}
+.pin-dot.filled { background:#f0d080; border-color:#f0d080; }
+.pin-keypad { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.pin-key {
+  padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.07); color:#fff; font-size:18px;
+  cursor:pointer; font-family:Tahoma,sans-serif; font-weight:bold;
+  transition:background 0.15s;
+}
+.pin-key:hover { background:rgba(255,255,255,0.15); }
+.pin-key:active { background:rgba(255,255,255,0.22); }
+.pin-key.del { font-size:14px; color:#e07070; border-color:rgba(224,112,112,0.3); }
+.pin-err { color:#e07070; font-size:12px; min-height:18px; margin-bottom:6px; }
+.pin-cancel { background:transparent; border:none; color:#8ab4d4; font-size:13px; cursor:pointer; font-family:Tahoma,sans-serif; }
+
+/* ===== داشبورد الأدمن ===== */
+#admin-dashboard {
+  display:none; position:fixed; inset:0;
+  background:linear-gradient(135deg,#0a1628,#1a3a5c);
+  z-index:300; overflow-y:auto; padding:20px;
+}
+.dash-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; flex-wrap:wrap; gap:10px;
+}
+.dash-title { color:#f0d080; font-size:19px; font-weight:bold; }
+.dash-sub { color:#8ab4d4; font-size:12px; margin-top:2px; }
+.btn-close-dash {
+  padding:8px 18px; border-radius:10px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.07); color:#c8dff0;
+  font-size:13px; cursor:pointer; font-family:Tahoma,sans-serif;
+}
+
+/* بطاقات الإحصاء */
+.stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
+.stat-card {
+  border-radius:16px; padding:16px 14px; text-align:center;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.stat-card.blue  { background:rgba(100,160,255,0.1); border-color:rgba(100,160,255,0.25); }
+.stat-card.green { background:rgba(60,180,60,0.1);  border-color:rgba(60,180,60,0.25); }
+.stat-card.orange{ background:rgba(255,165,0,0.1);  border-color:rgba(255,165,0,0.25); }
+.stat-card.red   { background:rgba(220,60,60,0.1);  border-color:rgba(220,60,60,0.25); }
+.stat-card.purple{ background:rgba(160,100,255,0.1);border-color:rgba(160,100,255,0.25); }
+.stat-num { font-size:30px; font-weight:bold; }
+.stat-card.blue   .stat-num { color:#7ab4f0; }
+.stat-card.green  .stat-num { color:#70e070; }
+.stat-card.orange .stat-num { color:#ffb347; }
+.stat-card.red    .stat-num { color:#e07070; }
+.stat-card.purple .stat-num { color:#c090ff; }
+.stat-label { font-size:11px; color:#8ab4d4; margin-top:5px; line-height:1.4; }
+
+/* قسم الرسم البياني */
+.chart-section {
+  background:rgba(255,255,255,0.04); border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1); padding:18px; margin-bottom:20px;
+}
+.chart-title { color:#c8dff0; font-size:13px; font-weight:bold; margin-bottom:16px; }
+.chart-wrap { position:relative; height:180px; }
+.chart-bars { display:flex; align-items:flex-end; gap:6px; height:100%; }
+.chart-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; height:100%; justify-content:flex-end; }
+.chart-bar {
+  width:100%; border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,#f0d080,#c9a84c);
+  min-height:4px; transition:height 0.4s;
+  cursor:pointer; position:relative;
+}
+.chart-bar:hover { background:linear-gradient(180deg,#fff3b0,#f0d080); }
+.chart-bar-tooltip {
+  display:none; position:absolute; bottom:105%; left:50%; transform:translateX(-50%);
+  background:#1a3a5c; border:1px solid rgba(255,255,255,0.2);
+  border-radius:8px; padding:5px 10px; font-size:11px; color:#fff;
+  white-space:nowrap; z-index:10;
+}
+.chart-bar:hover .chart-bar-tooltip { display:block; }
+.chart-label { font-size:9px; color:#8ab4d4; text-align:center; }
+.chart-yaxis {
+  position:absolute; right:100%; top:0; height:100%;
+  display:flex; flex-direction:column; justify-content:space-between;
+  padding-left:0; margin-right:6px;
+}
+.chart-yval { font-size:9px; color:#8ab4d4; white-space:nowrap; }
+.chart-loading { text-align:center; color:#8ab4d4; font-size:13px; padding:40px 0; }
+
+/* قسم المشتركين المتأخرين */
+.late-section {
+  background:rgba(255,255,255,0.04); border-radius:16px;
+  border:1px solid rgba(255,255,255,0.1); padding:18px; margin-bottom:20px;
+}
+.late-title { color:#c8dff0; font-size:13px; font-weight:bold; margin-bottom:14px; }
+.late-tabs { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+.late-tab {
+  padding:6px 14px; border-radius:20px; font-size:12px;
+  border:1px solid rgba(255,255,255,0.15); background:transparent;
+  color:#8ab4d4; cursor:pointer; font-family:Tahoma,sans-serif;
+}
+.late-tab.active { background:rgba(255,165,0,0.2); border-color:rgba(255,165,0,0.5); color:#ffb347; }
+.late-list { max-height:240px; overflow-y:auto; }
+.late-row {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+  flex-wrap:wrap; gap:6px;
+}
+.late-row:last-child { border-bottom:none; }
+.late-name { color:#fff; font-size:13px; }
+.late-meta { color:#8ab4d4; font-size:11px; }
+.late-badge {
+  font-size:11px; padding:3px 10px; border-radius:20px; font-weight:bold;
+}
+.badge-3m  { background:rgba(255,165,0,0.15); color:#ffb347; border:1px solid rgba(255,165,0,0.3); }
+.badge-6m  { background:rgba(220,60,60,0.15);  color:#e07070; border:1px solid rgba(220,60,60,0.3); }
+.badge-12m { background:rgba(160,30,30,0.2);   color:#ff9090; border:1px solid rgba(160,30,30,0.4); }
+.late-empty { text-align:center; color:#8ab4d4; font-size:13px; padding:20px; }
+
+.dash-loading {
+  text-align:center; color:#8ab4d4; padding:60px 20px;
+}
+.spinner {
+  width:36px; height:36px; border-radius:50%;
+  border:3px solid rgba(255,255,255,0.1);
+  border-top-color:#f0d080;
+  animation:spin 0.8s linear infinite;
+  margin:0 auto 14px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
 </style>
 </head>
 <body>
+
+<!-- الصفحة الرئيسية -->
 <div class="container">
   <div class="header">
     <div class="logo">&#x1F91D;</div>
@@ -167,37 +327,132 @@ input.err { border-color:#e05555; }
           <div class="months-box" id="r-months"></div>
         </div>
       </div>
-
-      <!-- تاريخ الاستعلام -->
       <div class="query-date" id="r-query-date"></div>
-
-      <!-- قسم الإيميل -->
       <div class="email-section">
         <label>&#x1F4E7; استلم ملخص اشتراكك على بريدك الإلكتروني</label>
         <input type="email" id="emailInput" placeholder="أدخل بريدك الإلكتروني..." />
         <button class="btn-email" id="emailBtn" onclick="sendEmail()">&#x2709;&#xFE0F; إرسال الملخص</button>
         <div class="email-success" id="emailSuccess">✅ تم إرسال الملخص إلى بريدك الإلكتروني بنجاح!</div>
       </div>
-
       <a href="https://myquraish.com" target="_blank" style="display:block;width:100%;margin-top:14px;padding:12px;border-radius:12px;border:1px solid rgba(201,168,76,0.4);background:rgba(201,168,76,0.1);color:#f0d080;font-size:14px;font-weight:bold;text-align:center;text-decoration:none;">&#x1F4B0; دفع الاشتراك عبر الموقع العائلي</a>
       <button class="btn-secondary" onclick="reset()">&#x1F504; استعلام جديد</button>
     </div>
   </div>
   <p class="footer">صندوق آل قريش التكافلي &bull; البيانات محدّثة من السجلات الرسمية</p>
 </div>
+
+<!-- أيقونة الأدمن الخفية -->
+<div id="admin-icon" onclick="openPinModal()" title="">⚙</div>
+
+<!-- مودال PIN -->
+<div id="pin-modal">
+  <div class="pin-box">
+    <div class="pin-title">🔐 دخول الأدمن</div>
+    <div class="pin-sub">أدخل رقم PIN المكوّن من 4 أرقام</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="dot-0"></div>
+      <div class="pin-dot" id="dot-1"></div>
+      <div class="pin-dot" id="dot-2"></div>
+      <div class="pin-dot" id="dot-3"></div>
+    </div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pinPress('1')">1</button>
+      <button class="pin-key" onclick="pinPress('2')">2</button>
+      <button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button>
+      <button class="pin-key" onclick="pinPress('5')">5</button>
+      <button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button>
+      <button class="pin-key" onclick="pinPress('8')">8</button>
+      <button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key del" onclick="pinDel()">⌫</button>
+      <button class="pin-key" onclick="pinPress('0')">0</button>
+      <button class="pin-key" onclick="pinCheck()">✓</button>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+    <button class="pin-cancel" onclick="closePinModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- داشبورد الأدمن -->
+<div id="admin-dashboard">
+  <div style="max-width:600px; margin:0 auto;">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">📊 لوحة تحكم الأدمن</div>
+        <div class="dash-sub">صندوق آل قريش التكافلي</div>
+      </div>
+      <button class="btn-close-dash" onclick="closeDash()">✕ إغلاق</button>
+    </div>
+
+    <div id="dash-loading" class="dash-loading">
+      <div class="spinner"></div>
+      جارٍ تحميل البيانات...
+    </div>
+
+    <div id="dash-content" style="display:none;">
+
+      <!-- بطاقات الإحصاء -->
+      <div class="stats-grid">
+        <div class="stat-card blue">
+          <div class="stat-num" id="d-total">—</div>
+          <div class="stat-label">إجمالي المشتركين</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="d-active">—</div>
+          <div class="stat-label">اشتراك نشط</div>
+        </div>
+        <div class="stat-card orange">
+          <div class="stat-num" id="d-late3">—</div>
+          <div class="stat-label">متأخر أكثر من 3 أشهر</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-num" id="d-late6">—</div>
+          <div class="stat-label">متأخر أكثر من 6 أشهر</div>
+        </div>
+        <div class="stat-card purple" style="grid-column:span 2;">
+          <div class="stat-num" id="d-late12">—</div>
+          <div class="stat-label">متأخر أكثر من سنة كاملة</div>
+        </div>
+      </div>
+
+      <!-- الرسم البياني -->
+      <div class="chart-section">
+        <div class="chart-title">💰 إجمالي الاشتراكات المحصّلة لكل شهر (ريال)</div>
+        <div class="chart-wrap">
+          <div class="chart-bars" id="chart-bars"></div>
+        </div>
+        <div style="display:flex; justify-content:center; margin-top:10px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div style="width:12px;height:12px;border-radius:3px;background:linear-gradient(180deg,#f0d080,#c9a84c);"></div>
+            <span style="font-size:11px;color:#8ab4d4;">المبلغ المحصّل (ريال)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- قائمة المتأخرين -->
+      <div class="late-section">
+        <div class="late-title">📋 قائمة المشتركين المتأخرين</div>
+        <div class="late-tabs">
+          <button class="late-tab active" onclick="showLate(3,this)">أكثر من 3 أشهر</button>
+          <button class="late-tab" onclick="showLate(6,this)">أكثر من 6 أشهر</button>
+          <button class="late-tab" onclick="showLate(12,this)">أكثر من سنة</button>
+        </div>
+        <div class="late-list" id="late-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
 var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzAGQzTGx5OiIY9ShFCJMmqu_FgeI1K8488fpUp09BlVs9iaBjteEcRSBXh9E5ZqTK0g/exec";
+var ADMIN_PIN = "1924";
 var currentData = null;
+var pinBuffer = "";
+var dashData = null;
 
-function sendHeight() {
-  var h = document.body.scrollHeight;
-  window.parent.postMessage({ iframeHeight: h }, "*");
-}
-window.addEventListener("load", sendHeight);
-window.addEventListener("resize", sendHeight);
-var obs = new MutationObserver(sendHeight);
-obs.observe(document.body, { childList: true, subtree: true });
-
+/* ======= الوظائف الأصلية ======= */
 document.getElementById("idInput").addEventListener("keydown", function(e) {
   if (e.key === "Enter") doSearch();
 });
@@ -208,12 +463,10 @@ function showErr(msg) {
   el.style.display = "block";
   document.getElementById("idInput").classList.add("err");
 }
-
 function hideErr() {
   document.getElementById("errMsg").style.display = "none";
   document.getElementById("idInput").classList.remove("err");
 }
-
 function getNowArabic() {
   var d = new Date();
   var months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
@@ -223,45 +476,36 @@ function getNowArabic() {
   m = m < 10 ? "0" + m : m;
   return "تاريخ الاستعلام: " + d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear() + " — " + h + ":" + m + " " + ampm;
 }
-
 function doSearch() {
   hideErr();
   var id = document.getElementById("idInput").value.trim();
   if (!id) { showErr("الرجاء إدخال رقم بطاقة الأحوال"); return; }
   var btn = document.getElementById("searchBtn");
-  btn.disabled = true;
-  btn.textContent = "جارٍ البحث...";
+  btn.disabled = true; btn.textContent = "جارٍ البحث...";
   var cbName = "cb_" + Date.now();
   var script = document.createElement("script");
   script.src = SCRIPT_URL + "?id=" + encodeURIComponent(id) + "&callback=" + cbName;
   window[cbName] = function(data) {
     delete window[cbName];
     if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "استعلام";
+    btn.disabled = false; btn.textContent = "استعلام";
     if (data.error === "not_found") {
       showErr("لم يتم العثور على هذا الرقم في قاعدة البيانات");
-    } else {
-      currentData = data;
-      showResult(data);
-    }
+    } else { currentData = data; showResult(data); }
   };
   script.onerror = function() {
     delete window[cbName];
     if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "استعلام";
+    btn.disabled = false; btn.textContent = "استعلام";
     showErr("حدث خطأ في الاتصال، يرجى المحاولة مجدداً");
   };
   document.body.appendChild(script);
 }
-
 function sendEmail() {
   var email = document.getElementById("emailInput").value.trim();
   if (!email || !email.includes("@")) { alert("الرجاء إدخال بريد إلكتروني صحيح"); return; }
   var btn = document.getElementById("emailBtn");
-  btn.disabled = true;
-  btn.textContent = "جارٍ الإرسال...";
+  btn.disabled = true; btn.textContent = "جارٍ الإرسال...";
   var d = currentData;
   var cbName = "cbEmail_" + Date.now();
   var script = document.createElement("script");
@@ -280,25 +524,20 @@ function sendEmail() {
   window[cbName] = function(res) {
     delete window[cbName];
     if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "إرسال الملخص";
+    btn.disabled = false; btn.textContent = "إرسال الملخص";
     if (res.success) {
       document.getElementById("emailSuccess").style.display = "block";
       document.getElementById("emailInput").value = "";
-    } else {
-      alert("حدث خطأ في إرسال الإيميل، يرجى المحاولة مجدداً");
-    }
+    } else { alert("حدث خطأ في إرسال الإيميل، يرجى المحاولة مجدداً"); }
   };
   script.onerror = function() {
     delete window[cbName];
     if (script.parentNode) script.parentNode.removeChild(script);
-    btn.disabled = false;
-    btn.textContent = "إرسال الملخص";
+    btn.disabled = false; btn.textContent = "إرسال الملخص";
     alert("حدث خطأ في الاتصال");
   };
   document.body.appendChild(script);
 }
-
 function formatDate(d) {
   if (!d) return "";
   var dt = new Date(d);
@@ -306,7 +545,6 @@ function formatDate(d) {
   var months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
   return dt.getDate() + " " + months[dt.getMonth()] + " " + dt.getFullYear();
 }
-
 function showResult(data) {
   document.getElementById("r-id").textContent     = data.id;
   document.getElementById("r-phone").textContent  = data.phone;
@@ -316,29 +554,23 @@ function showResult(data) {
   document.getElementById("r-months").textContent = data.months;
   document.getElementById("r-query-date").textContent = getNowArabic();
   document.getElementById("emailSuccess").style.display = "none";
-
   var badge = document.getElementById("r-badge");
   var warning = document.getElementById("r-warning");
-
   if (data.active) {
     badge.textContent = "✅ اشتراكك نشط";
     badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(60,180,60,0.15);border:1px solid rgba(60,180,60,0.3);color:#70e070;";
     if (data.monthsRemaining <= 2 && data.monthsRemaining > 0) {
       document.getElementById("r-remaining").textContent = data.monthsRemaining;
       warning.style.display = "block";
-    } else {
-      warning.style.display = "none";
-    }
+    } else { warning.style.display = "none"; }
   } else {
     badge.textContent = "⚠️ اشتراكك غير نشط";
     badge.style.cssText = "margin-top:16px;padding:14px 16px;border-radius:14px;text-align:center;font-size:15px;font-weight:bold;background:rgba(220,60,60,0.15);border:1px solid rgba(220,60,60,0.3);color:#e07070;";
     warning.style.display = "none";
   }
-
   document.getElementById("search").style.display = "none";
   document.getElementById("result").style.display = "block";
 }
-
 function reset() {
   currentData = null;
   document.getElementById("idInput").value = "";
@@ -347,6 +579,195 @@ function reset() {
   hideErr();
   document.getElementById("search").style.display = "block";
   document.getElementById("result").style.display = "none";
+}
+
+/* ======= PIN ======= */
+function openPinModal() {
+  pinBuffer = "";
+  updateDots();
+  document.getElementById("pin-err").textContent = "";
+  document.getElementById("pin-modal").classList.add("open");
+}
+function closePinModal() {
+  document.getElementById("pin-modal").classList.remove("open");
+  pinBuffer = "";
+  updateDots();
+}
+function updateDots() {
+  for (var i = 0; i < 4; i++) {
+    document.getElementById("dot-" + i).classList.toggle("filled", i < pinBuffer.length);
+  }
+}
+function pinPress(d) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += d;
+  updateDots();
+  document.getElementById("pin-err").textContent = "";
+  if (pinBuffer.length === 4) setTimeout(pinCheck, 120);
+}
+function pinDel() {
+  if (pinBuffer.length > 0) { pinBuffer = pinBuffer.slice(0, -1); updateDots(); }
+}
+function pinCheck() {
+  if (pinBuffer === ADMIN_PIN) {
+    closePinModal();
+    openDash();
+  } else {
+    document.getElementById("pin-err").textContent = "❌ رقم PIN غير صحيح";
+    pinBuffer = "";
+    updateDots();
+  }
+}
+
+/* ======= داشبورد الأدمن ======= */
+function openDash() {
+  document.getElementById("admin-dashboard").style.display = "block";
+  document.getElementById("dash-loading").style.display = "block";
+  document.getElementById("dash-content").style.display = "none";
+  if (dashData) { renderDash(dashData); return; }
+  loadDashData();
+}
+function closeDash() {
+  document.getElementById("admin-dashboard").style.display = "none";
+}
+
+function loadDashData() {
+  var cbName = "cbDash_" + Date.now();
+  var script = document.createElement("script");
+  script.src = SCRIPT_URL + "?action=getAllSubscribers&callback=" + cbName;
+  window[cbName] = function(data) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    if (!data || !data.subscribers) {
+      document.getElementById("dash-loading").innerHTML = "<p style='color:#e07070'>⚠️ حدث خطأ في تحميل البيانات</p>";
+      return;
+    }
+    dashData = data.subscribers;
+    renderDash(dashData);
+  };
+  script.onerror = function() {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    document.getElementById("dash-loading").innerHTML = "<p style='color:#e07070'>⚠️ تعذّر الاتصال بالسيرفر</p>";
+  };
+  document.body.appendChild(script);
+}
+
+function renderDash(subs) {
+  var now = new Date();
+  var total = subs.length;
+  var active = 0, late3 = [], late6 = [], late12 = [];
+
+  // حساب الإحصاءات — المتأخر = اشتراك غير نشط
+  // نحسب كم شهر مضى منذ انتهاء الاشتراك
+  subs.forEach(function(s) {
+    if (s.active) { active++; return; }
+    // حساب عدد الأشهر منذ انتهاء الاشتراك
+    var lastDate = s.lastDate ? new Date(s.lastDate) : null;
+    if (!lastDate || isNaN(lastDate)) { late12.push(s); late6.push(s); late3.push(s); return; }
+    var diffMonths = (now.getFullYear() - lastDate.getFullYear()) * 12
+                   + (now.getMonth() - lastDate.getMonth())
+                   - 6; // نطرح 6 لأن السماح 6 أشهر
+    if (diffMonths < 0) diffMonths = 0;
+    if (diffMonths > 3)  late3.push(s);
+    if (diffMonths > 6)  late6.push(s);
+    if (diffMonths > 12) late12.push(s);
+  });
+
+  document.getElementById("d-total").textContent  = total;
+  document.getElementById("d-active").textContent = active;
+  document.getElementById("d-late3").textContent  = late3.length;
+  document.getElementById("d-late6").textContent  = late6.length;
+  document.getElementById("d-late12").textContent = late12.length;
+
+  // تخزين للتابات
+  window._late3  = late3;
+  window._late6  = late6;
+  window._late12 = late12;
+
+  // رسم الرسم البياني
+  renderChart(subs);
+
+  // عرض القائمة الافتراضية (3 أشهر)
+  showLate(3, document.querySelector(".late-tab.active"));
+
+  document.getElementById("dash-loading").style.display = "none";
+  document.getElementById("dash-content").style.display = "block";
+}
+
+function renderChart(subs) {
+  // نجمع المبالغ حسب شهر تاريخ السداد (آخر 12 شهر)
+  var now = new Date();
+  var monthlyTotals = {};
+  var monthLabels = [];
+  var arMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+
+  // بناء آخر 12 شهر
+  for (var i = 11; i >= 0; i--) {
+    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    var key = d.getFullYear() + "-" + d.getMonth();
+    monthlyTotals[key] = 0;
+    monthLabels.push({ key: key, label: arMonths[d.getMonth()].substring(0,3), year: d.getFullYear() });
+  }
+
+  subs.forEach(function(s) {
+    var dt = s.lastDate ? new Date(s.lastDate) : null;
+    if (!dt || isNaN(dt)) return;
+    var key = dt.getFullYear() + "-" + dt.getMonth();
+    var amount = parseFloat(s.amount) || 0;
+    if (monthlyTotals[key] !== undefined) monthlyTotals[key] += amount;
+  });
+
+  var values = monthLabels.map(function(m) { return monthlyTotals[m.key]; });
+  var maxVal = Math.max.apply(null, values) || 1;
+
+  var barsEl = document.getElementById("chart-bars");
+  barsEl.innerHTML = "";
+
+  monthLabels.forEach(function(m, i) {
+    var val = values[i];
+    var pct = Math.round((val / maxVal) * 100);
+    if (pct < 3 && val > 0) pct = 3;
+
+    var col = document.createElement("div");
+    col.className = "chart-bar-col";
+    col.innerHTML =
+      '<div class="chart-bar" style="height:' + pct + '%">'
+      + '<div class="chart-bar-tooltip">' + val.toLocaleString() + ' ريال<br>' + m.label + ' ' + m.year + '</div>'
+      + '</div>'
+      + '<div class="chart-label">' + m.label + '</div>';
+    barsEl.appendChild(col);
+  });
+}
+
+function showLate(months, btn) {
+  // تحديث التابات
+  document.querySelectorAll(".late-tab").forEach(function(t) { t.classList.remove("active"); });
+  if (btn) btn.classList.add("active");
+
+  var list = months === 3 ? window._late3 : (months === 6 ? window._late6 : window._late12);
+  var badgeClass = months === 3 ? "badge-3m" : (months === 6 ? "badge-6m" : "badge-12m");
+  var badgeText  = months === 3 ? "+3 أشهر" : (months === 6 ? "+6 أشهر" : "+سنة");
+
+  var el = document.getElementById("late-list");
+  el.innerHTML = "";
+
+  if (!list || list.length === 0) {
+    el.innerHTML = '<div class="late-empty">✅ لا يوجد مشتركون في هذه الفئة</div>';
+    return;
+  }
+
+  list.forEach(function(s) {
+    var row = document.createElement("div");
+    row.className = "late-row";
+    row.innerHTML =
+      '<div>'
+      + '<div class="late-name">' + (s.name || "—") + '</div>'
+      + '<div class="late-meta">' + s.phone + ' &bull; آخر سداد: ' + formatDate(s.lastDate) + '</div>'
+      + '</div>'
+      + '<span class="late-badge ' + badgeClass + '">' + badgeText + '</span>';
+    el.appendChild(row);
+  });
 }
 </script>
 </body>
