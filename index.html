@@ -167,17 +167,14 @@ input.err { border-color:#e05555; }
   background:linear-gradient(135deg,#c9a84c,#f0d080);
   color:#1a1a1a; font-size:13px; font-weight:bold;
   cursor:pointer; font-family:Tahoma,sans-serif;
-  display:flex; align-items:center; gap:6px;
 }
-
-/* بطاقات الإحصاء */
 .stats-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px; }
 .stat-card { border-radius:16px; padding:16px 14px; text-align:center; border:1px solid rgba(255,255,255,0.1); }
 .stat-card.blue   { background:rgba(100,160,255,0.1); border-color:rgba(100,160,255,0.25); }
-.stat-card.green  { background:rgba(60,180,60,0.1);  border-color:rgba(60,180,60,0.25); }
-.stat-card.orange { background:rgba(255,165,0,0.1);  border-color:rgba(255,165,0,0.25); }
-.stat-card.red    { background:rgba(220,60,60,0.1);  border-color:rgba(220,60,60,0.25); }
-.stat-card.purple { background:rgba(160,100,255,0.1);border-color:rgba(160,100,255,0.25); }
+.stat-card.green  { background:rgba(60,180,60,0.1);   border-color:rgba(60,180,60,0.25); }
+.stat-card.orange { background:rgba(255,165,0,0.1);   border-color:rgba(255,165,0,0.25); }
+.stat-card.red    { background:rgba(220,60,60,0.1);   border-color:rgba(220,60,60,0.25); }
+.stat-card.purple { background:rgba(160,100,255,0.1); border-color:rgba(160,100,255,0.25); }
 .stat-num { font-size:30px; font-weight:bold; }
 .stat-card.blue   .stat-num { color:#7ab4f0; }
 .stat-card.green  .stat-num { color:#70e070; }
@@ -185,8 +182,6 @@ input.err { border-color:#e05555; }
 .stat-card.red    .stat-num { color:#e07070; }
 .stat-card.purple .stat-num { color:#c090ff; }
 .stat-label { font-size:11px; color:#8ab4d4; margin-top:5px; line-height:1.4; }
-
-/* الرسم البياني */
 .chart-section {
   background:rgba(255,255,255,0.04); border-radius:16px;
   border:1px solid rgba(255,255,255,0.1); padding:18px; margin-bottom:20px;
@@ -209,8 +204,6 @@ input.err { border-color:#e05555; }
 }
 .chart-bar:hover .chart-bar-tooltip { display:block; }
 .chart-label { font-size:9px; color:#8ab4d4; text-align:center; }
-
-/* قائمة المتأخرين */
 .late-section {
   background:rgba(255,255,255,0.04); border-radius:16px;
   border:1px solid rgba(255,255,255,0.1); padding:18px; margin-bottom:20px;
@@ -241,10 +234,10 @@ input.err { border-color:#e05555; }
   padding:6px 12px; border-radius:8px; border:none;
   background:#25D366; color:#fff; font-size:12px;
   cursor:pointer; font-family:Tahoma,sans-serif;
-  white-space:nowrap; display:flex; align-items:center; gap:4px;
+  white-space:nowrap; display:inline-flex; align-items:center; gap:4px;
+  text-decoration:none;
 }
 .late-empty { text-align:center; color:#8ab4d4; font-size:13px; padding:20px; }
-
 .dash-loading { text-align:center; color:#8ab4d4; padding:60px 20px; }
 .spinner {
   width:36px; height:36px; border-radius:50%;
@@ -258,52 +251,35 @@ input.err { border-color:#e05555; }
   body { background:#fff !important; display:block !important; padding:0 !important; }
   .container, #admin-icon, #pin-modal, #admin-dashboard { display:none !important; }
   #print-page { display:block !important; }
+  .print-no-print { display:none !important; }
 }
-#print-page {
-  display:none;
-  font-family:Tahoma,sans-serif;
-  direction:rtl;
-  padding:20px;
-  background:#fff;
-  color:#111;
-}
-.print-header {
-  text-align:center; border-bottom:2px solid #c9a84c;
-  padding-bottom:14px; margin-bottom:20px;
-}
+#print-page { display:none; font-family:Tahoma,sans-serif; direction:rtl; padding:24px; background:#fff; color:#111; }
+.print-header { text-align:center; border-bottom:2px solid #c9a84c; padding-bottom:14px; margin-bottom:20px; }
 .print-header h1 { font-size:20px; color:#0a1628; }
 .print-header p { font-size:12px; color:#666; margin-top:4px; }
-.print-stats { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
-.print-stat {
-  flex:1; min-width:100px; border:1px solid #ddd; border-radius:8px;
-  padding:12px; text-align:center;
-}
-.print-stat-num { font-size:24px; font-weight:bold; color:#0a1628; }
+.print-stats { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.print-stat { flex:1; min-width:90px; border:1px solid #ddd; border-radius:8px; padding:10px; text-align:center; }
+.print-stat-num { font-size:22px; font-weight:bold; color:#0a1628; }
 .print-stat-label { font-size:10px; color:#666; margin-top:3px; }
 .print-section-title {
   font-size:13px; font-weight:bold; color:#0a1628;
-  border-right:3px solid #c9a84c; padding-right:8px;
-  margin:18px 0 10px;
+  border-right:3px solid #c9a84c; padding-right:8px; margin:18px 0 10px;
 }
-.print-chart-bars {
-  display:flex; align-items:flex-end; gap:4px; height:120px;
-  border-bottom:1px solid #ccc; margin-bottom:6px;
-}
+.print-chart-bars { display:flex; align-items:flex-end; gap:4px; height:100px; border-bottom:1px solid #ccc; margin-bottom:4px; }
 .print-bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; height:100%; justify-content:flex-end; }
 .print-bar { width:100%; background:#c9a84c; border-radius:3px 3px 0 0; min-height:2px; }
-.print-bar-label { font-size:8px; color:#666; text-align:center; }
 .print-bar-val { font-size:7px; color:#333; text-align:center; }
 .print-table { width:100%; border-collapse:collapse; font-size:11px; margin-bottom:16px; }
 .print-table th { background:#0a1628; color:#f0d080; padding:7px 8px; text-align:right; }
 .print-table td { padding:6px 8px; border-bottom:1px solid #eee; }
 .print-table tr:nth-child(even) td { background:#f9f9f9; }
 .print-footer { text-align:center; font-size:10px; color:#aaa; margin-top:20px; border-top:1px solid #eee; padding-top:10px; }
-.print-no-print { text-align:center; margin-bottom:16px; }
+.print-no-print { text-align:center; margin-bottom:20px; display:flex; gap:10px; justify-content:center; }
 .btn-do-print {
   padding:10px 24px; border-radius:10px; border:none;
   background:linear-gradient(135deg,#c9a84c,#f0d080);
   color:#1a1a1a; font-size:14px; font-weight:bold;
-  cursor:pointer; font-family:Tahoma,sans-serif; margin-left:8px;
+  cursor:pointer; font-family:Tahoma,sans-serif;
 }
 .btn-back-dash {
   padding:10px 24px; border-radius:10px;
@@ -421,41 +397,21 @@ input.err { border-color:#e05555; }
         <button class="btn-close-dash" onclick="closeDash()">✕ إغلاق</button>
       </div>
     </div>
-
     <div id="dash-loading" class="dash-loading">
       <div class="spinner"></div>
       جارٍ تحميل البيانات...
     </div>
-
     <div id="dash-content" style="display:none;">
       <div class="stats-grid">
-        <div class="stat-card blue">
-          <div class="stat-num" id="d-total">—</div>
-          <div class="stat-label">إجمالي المشتركين</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-num" id="d-active">—</div>
-          <div class="stat-label">اشتراك نشط</div>
-        </div>
-        <div class="stat-card orange">
-          <div class="stat-num" id="d-late3">—</div>
-          <div class="stat-label">متأخر أكثر من 3 أشهر</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-num" id="d-late6">—</div>
-          <div class="stat-label">متأخر أكثر من 6 أشهر</div>
-        </div>
-        <div class="stat-card purple" style="grid-column:span 2;">
-          <div class="stat-num" id="d-late12">—</div>
-          <div class="stat-label">متأخر أكثر من سنة كاملة</div>
-        </div>
+        <div class="stat-card blue"><div class="stat-num" id="d-total">—</div><div class="stat-label">إجمالي المشتركين</div></div>
+        <div class="stat-card green"><div class="stat-num" id="d-active">—</div><div class="stat-label">اشتراك نشط</div></div>
+        <div class="stat-card orange"><div class="stat-num" id="d-late3">—</div><div class="stat-label">متأخر أكثر من 3 أشهر</div></div>
+        <div class="stat-card red"><div class="stat-num" id="d-late6">—</div><div class="stat-label">متأخر أكثر من 6 أشهر</div></div>
+        <div class="stat-card purple" style="grid-column:span 2;"><div class="stat-num" id="d-late12">—</div><div class="stat-label">متأخر أكثر من سنة كاملة</div></div>
       </div>
-
       <div class="chart-section">
         <div class="chart-title">💰 إجمالي الاشتراكات المحصّلة لكل شهر (ريال)</div>
-        <div class="chart-wrap">
-          <div class="chart-bars" id="chart-bars"></div>
-        </div>
+        <div class="chart-wrap"><div class="chart-bars" id="chart-bars"></div></div>
         <div style="display:flex;justify-content:center;margin-top:10px;">
           <div style="display:flex;align-items:center;gap:6px;">
             <div style="width:12px;height:12px;border-radius:3px;background:#c9a84c;"></div>
@@ -463,7 +419,6 @@ input.err { border-color:#e05555; }
           </div>
         </div>
       </div>
-
       <div class="late-section">
         <div class="late-title">📋 قائمة المشتركين المتأخرين</div>
         <div class="late-tabs">
@@ -492,20 +447,14 @@ input.err { border-color:#e05555; }
   <div class="print-section-title">💰 الاشتراكات المحصّلة (آخر 12 شهر)</div>
   <div class="print-chart-bars" id="print-chart-bars"></div>
   <div style="display:flex;gap:4px;margin-bottom:16px;" id="print-chart-labels"></div>
-  <div class="print-section-title">⚠️ المشتركون المتأخرون أكثر من 3 أشهر</div>
+  <div class="print-section-title">⚠️ المشتركون المتأخرون أكثر من 3 أشهر — مرتّبون من الأقل إلى الأكثر</div>
   <table class="print-table">
-    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
-    <tbody id="print-late3-body"></tbody>
-  </table>
-  <div class="print-section-title">🔴 المشتركون المتأخرون أكثر من 6 أشهر</div>
-  <table class="print-table">
-    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
-    <tbody id="print-late6-body"></tbody>
-  </table>
-  <div class="print-section-title">🚨 المشتركون المتأخرون أكثر من سنة</div>
-  <table class="print-table">
-    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
-    <tbody id="print-late12-body"></tbody>
+    <thead>
+      <tr>
+        <th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th>
+      </tr>
+    </thead>
+    <tbody id="print-late-body"></tbody>
   </table>
   <div class="print-footer" id="print-footer"></div>
 </div>
@@ -516,7 +465,6 @@ var ADMIN_PIN = "1924";
 var currentData = null;
 var pinBuffer = "";
 var dashData = null;
-var _late3 = [], _late6 = [], _late12 = [];
 var _chartLabels = [], _chartValues = [];
 
 /* ======= وظائف الأداة الأصلية ======= */
@@ -636,17 +584,17 @@ function openPinModal() {
   document.getElementById("pin-modal").classList.add("open");
 }
 function closePinModal() { document.getElementById("pin-modal").classList.remove("open"); pinBuffer = ""; updateDots(); }
-function updateDots() { for (var i = 0; i < 4; i++) document.getElementById("dot-" + i).classList.toggle("filled", i < pinBuffer.length); }
+function updateDots() { for (var i=0;i<4;i++) document.getElementById("dot-"+i).classList.toggle("filled", i<pinBuffer.length); }
 function pinPress(d) {
   if (pinBuffer.length >= 4) return;
   pinBuffer += d; updateDots();
   document.getElementById("pin-err").textContent = "";
   if (pinBuffer.length === 4) setTimeout(pinCheck, 120);
 }
-function pinDel() { if (pinBuffer.length > 0) { pinBuffer = pinBuffer.slice(0, -1); updateDots(); } }
+function pinDel() { if (pinBuffer.length>0) { pinBuffer=pinBuffer.slice(0,-1); updateDots(); } }
 function pinCheck() {
   if (pinBuffer === ADMIN_PIN) { closePinModal(); openDash(); }
-  else { document.getElementById("pin-err").textContent = "❌ رقم PIN غير صحيح"; pinBuffer = ""; updateDots(); }
+  else { document.getElementById("pin-err").textContent = "❌ رقم PIN غير صحيح"; pinBuffer=""; updateDots(); }
 }
 
 /* ======= داشبورد ======= */
@@ -680,30 +628,24 @@ function calcLateMonths(s) {
   var now = new Date();
   var lastDate = s.lastDate ? new Date(s.lastDate) : null;
   if (!lastDate || isNaN(lastDate)) return 99;
-  var diffMonths = (now.getFullYear() - lastDate.getFullYear()) * 12
-                 + (now.getMonth() - lastDate.getMonth()) - 6;
-  return diffMonths < 0 ? 0 : diffMonths;
+  var diff = (now.getFullYear()-lastDate.getFullYear())*12 + (now.getMonth()-lastDate.getMonth()) - 6;
+  return diff < 0 ? 0 : diff;
 }
 
 function renderDash(subs) {
-  var now = new Date();
-  var total = subs.length, active = 0;
-  _late3 = []; _late6 = []; _late12 = [];
-
+  var total = subs.length, active = 0, late3=0, late6=0, late12=0;
   subs.forEach(function(s) {
     if (s.active) { active++; return; }
     var late = calcLateMonths(s);
-    if (late > 3)  _late3.push(s);
-    if (late > 6)  _late6.push(s);
-    if (late > 12) _late12.push(s);
+    if (late > 3)  late3++;
+    if (late > 6)  late6++;
+    if (late > 12) late12++;
   });
-
   document.getElementById("d-total").textContent  = total;
   document.getElementById("d-active").textContent = active;
-  document.getElementById("d-late3").textContent  = _late3.length;
-  document.getElementById("d-late6").textContent  = _late6.length;
-  document.getElementById("d-late12").textContent = _late12.length;
-
+  document.getElementById("d-late3").textContent  = late3;
+  document.getElementById("d-late6").textContent  = late6;
+  document.getElementById("d-late12").textContent = late12;
   renderChart(subs);
   showLate(3, document.querySelector(".late-tab.active"));
   document.getElementById("dash-loading").style.display = "none";
@@ -713,74 +655,69 @@ function renderDash(subs) {
 function renderChart(subs) {
   var now = new Date();
   var arMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-  var monthlyTotals = {};
-  _chartLabels = [];
-  for (var i = 11; i >= 0; i--) {
-    var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    var key = d.getFullYear() + "-" + d.getMonth();
-    monthlyTotals[key] = 0;
-    _chartLabels.push({ key: key, label: arMonths[d.getMonth()].substring(0,3), year: d.getFullYear(), month: arMonths[d.getMonth()] });
+  var totals = {}; _chartLabels = [];
+  for (var i=11;i>=0;i--) {
+    var d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    var key = d.getFullYear()+"-"+d.getMonth();
+    totals[key] = 0;
+    _chartLabels.push({key:key, label:arMonths[d.getMonth()].substring(0,3), year:d.getFullYear(), month:arMonths[d.getMonth()]});
   }
   subs.forEach(function(s) {
     var dt = s.lastDate ? new Date(s.lastDate) : null;
-    if (!dt || isNaN(dt)) return;
-    var key = dt.getFullYear() + "-" + dt.getMonth();
-    if (monthlyTotals[key] !== undefined) monthlyTotals[key] += (parseFloat(s.amount) || 0);
+    if (!dt||isNaN(dt)) return;
+    var key = dt.getFullYear()+"-"+dt.getMonth();
+    if (totals[key]!==undefined) totals[key] += (parseFloat(s.amount)||0);
   });
-  _chartValues = _chartLabels.map(function(m) { return monthlyTotals[m.key]; });
-  var maxVal = Math.max.apply(null, _chartValues) || 1;
+  _chartValues = _chartLabels.map(function(m){return totals[m.key];});
+  var maxVal = Math.max.apply(null,_chartValues)||1;
   var barsEl = document.getElementById("chart-bars");
   barsEl.innerHTML = "";
-  _chartLabels.forEach(function(m, i) {
-    var val = _chartValues[i];
-    var pct = Math.round((val / maxVal) * 100);
-    if (pct < 3 && val > 0) pct = 3;
-    var col = document.createElement("div");
-    col.className = "chart-bar-col";
-    col.innerHTML = '<div class="chart-bar" style="height:' + pct + '%">'
-      + '<div class="chart-bar-tooltip">' + val.toLocaleString() + ' ريال<br>' + m.month + ' ' + m.year + '</div>'
-      + '</div><div class="chart-label">' + m.label + '</div>';
+  _chartLabels.forEach(function(m,i) {
+    var val=_chartValues[i], pct=Math.round((val/maxVal)*100);
+    if (pct<3&&val>0) pct=3;
+    var col=document.createElement("div"); col.className="chart-bar-col";
+    col.innerHTML='<div class="chart-bar" style="height:'+pct+'%">'
+      +'<div class="chart-bar-tooltip">'+val.toLocaleString()+' ريال<br>'+m.month+' '+m.year+'</div>'
+      +'</div><div class="chart-label">'+m.label+'</div>';
     barsEl.appendChild(col);
   });
 }
 
 function buildWaLink(sub, lateMonths) {
-  var phone = sub.phone.replace(/\s|-/g, "");
-  if (phone.startsWith("05")) phone = "966" + phone.substring(1);
-  else if (phone.startsWith("5")) phone = "966" + phone;
-  var name = sub.name || "المشترك الكريم";
-  var msg = "السلام عليكم " + name + " ،\n"
-    + "نُذكّرك بأن اشتراكك في صندوق آل قريش التكافلي قد تأخّر لمدة " + lateMonths + " شهر.\n"
-    + "يُرجى الإسراع بالسداد عبر الموقع العائلي: www.myquraish.com\n"
-    + "أو التواصل مع إدارة الصندوق.\nشكراً 🤝";
-  return "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
+  var phone = sub.phone.replace(/\s|-/g,"");
+  if (phone.startsWith("05")) phone="966"+phone.substring(1);
+  else if (phone.startsWith("5")) phone="966"+phone;
+  var name = sub.name||"المشترك الكريم";
+  var msg = "السلام عليكم "+name+" ،\n"
+    +"نُذكّرك بأن اشتراكك في صندوق آل قريش التكافلي قد تأخّر لمدة "+lateMonths+" شهر.\n"
+    +"يُرجى الإسراع بالسداد عبر الموقع العائلي: www.myquraish.com\n"
+    +"أو التواصل مع إدارة الصندوق.\nشكراً 🤝";
+  return "https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
 }
 
 function showLate(months, btn) {
-  document.querySelectorAll(".late-tab").forEach(function(t) { t.classList.remove("active"); });
+  document.querySelectorAll(".late-tab").forEach(function(t){t.classList.remove("active");});
   if (btn) btn.classList.add("active");
-  var list = months === 3 ? _late3 : (months === 6 ? _late6 : _late12);
-  var badgeClass = months === 3 ? "badge-3m" : (months === 6 ? "badge-6m" : "badge-12m");
-  var badgeText  = months === 3 ? "+3 أشهر" : (months === 6 ? "+6 أشهر" : "+سنة");
-  var el = document.getElementById("late-list");
-  el.innerHTML = "";
-  if (!list || list.length === 0) {
-    el.innerHTML = '<div class="late-empty">✅ لا يوجد مشتركون في هذه الفئة</div>'; return;
-  }
-  list.forEach(function(s) {
+  var el = document.getElementById("late-list"); el.innerHTML="";
+  var list = [], badgeClass="", badgeText="";
+  if (months===3)  { badgeClass="badge-3m";  badgeText="+3 أشهر"; }
+  if (months===6)  { badgeClass="badge-6m";  badgeText="+6 أشهر"; }
+  if (months===12) { badgeClass="badge-12m"; badgeText="+سنة"; }
+  dashData.forEach(function(s) {
+    if (s.active) return;
     var late = calcLateMonths(s);
-    var waLink = buildWaLink(s, late);
-    var row = document.createElement("div");
-    row.className = "late-row";
-    row.innerHTML =
-      '<div>'
-      + '<div class="late-name">' + (s.name || "—") + '</div>'
-      + '<div class="late-meta">' + s.phone + ' &bull; آخر سداد: ' + formatDate(s.lastDate) + '</div>'
-      + '</div>'
-      + '<div class="late-right">'
-      + '<span class="late-badge ' + badgeClass + '">' + badgeText + '</span>'
-      + '<a href="' + waLink + '" target="_blank" class="btn-wa-small">📲 تذكير</a>'
-      + '</div>';
+    if (late > months) list.push(s);
+  });
+  if (list.length===0) { el.innerHTML='<div class="late-empty">✅ لا يوجد مشتركون في هذه الفئة</div>'; return; }
+  list.forEach(function(s) {
+    var late=calcLateMonths(s), waLink=buildWaLink(s,late);
+    var row=document.createElement("div"); row.className="late-row";
+    row.innerHTML='<div><div class="late-name">'+(s.name||"—")+'</div>'
+      +'<div class="late-meta">'+s.phone+' &bull; آخر سداد: '+formatDate(s.lastDate)+'</div></div>'
+      +'<div class="late-right">'
+      +'<span class="late-badge '+badgeClass+'">'+badgeText+'</span>'
+      +'<a href="'+waLink+'" target="_blank" class="btn-wa-small">📲 تذكير</a>'
+      +'</div>';
     el.appendChild(row);
   });
 }
@@ -789,82 +726,72 @@ function showLate(months, btn) {
 function openPrintPage() {
   if (!dashData) return;
   var now = new Date();
-  var arMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-  var dateStr = now.getDate() + " " + arMonths[now.getMonth()] + " " + now.getFullYear();
+  var arMonths=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var dateStr = now.getDate()+" "+arMonths[now.getMonth()]+" "+now.getFullYear();
+  document.getElementById("print-date-label").textContent = "تاريخ التقرير: "+dateStr;
 
-  document.getElementById("print-date-label").textContent = "تاريخ التقرير: " + dateStr;
-
-  // إعادة حساب القوائم من dashData مباشرة (لضمان دقة البيانات)
-  var pLate3 = [], pLate6 = [], pLate12 = [];
+  // حساب الإحصاءات مباشرة
+  var total=dashData.length, active=0, late3=[], late6=[], late12=[];
   dashData.forEach(function(s) {
-    if (s.active) return;
-    var late = calcLateMonths(s);
-    if (late > 3)  pLate3.push(s);
-    if (late > 6)  pLate6.push(s);
-    if (late > 12) pLate12.push(s);
+    if (s.active){active++;return;}
+    var late=calcLateMonths(s);
+    if (late>3)  late3.push(s);
+    if (late>6)  late6.push(s);
+    if (late>12) late12.push(s);
   });
 
-  // إحصاءات
-  var total = dashData.length;
-  var active = dashData.filter(function(s){ return s.active; }).length;
-  document.getElementById("print-stats").innerHTML =
-    '<div class="print-stat"><div class="print-stat-num">' + total   + '</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + active  + '</div><div class="print-stat-label">نشط</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + pLate3.length  + '</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + pLate6.length  + '</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + pLate12.length + '</div><div class="print-stat-label">متأخر +سنة</div></div>';
+  // الإحصاءات
+  document.getElementById("print-stats").innerHTML=
+    '<div class="print-stat"><div class="print-stat-num">'+total+'</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+active+'</div><div class="print-stat-label">نشط</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late3.length+'</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late6.length+'</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late12.length+'</div><div class="print-stat-label">متأخر +سنة</div></div>';
 
-  // رسم بياني للطباعة
-  var maxVal = Math.max.apply(null, _chartValues) || 1;
-  var barsHTML = "", labelsHTML = "";
-  _chartLabels.forEach(function(m, i) {
-    var val = _chartValues[i];
-    var pct = Math.round((val / maxVal) * 100);
-    if (pct < 2 && val > 0) pct = 2;
-    barsHTML += '<div class="print-bar-col">'
-      + '<div class="print-bar-val">' + (val > 0 ? val.toLocaleString() : '') + '</div>'
-      + '<div class="print-bar" style="height:' + pct + '%"></div>'
-      + '</div>';
-    labelsHTML += '<div style="flex:1;font-size:8px;color:#666;text-align:center;">' + m.label + '</div>';
+  // الرسم البياني
+  var maxVal=Math.max.apply(null,_chartValues)||1;
+  var barsHTML="", labelsHTML="";
+  _chartLabels.forEach(function(m,i){
+    var val=_chartValues[i], pct=Math.round((val/maxVal)*100);
+    if (pct<2&&val>0) pct=2;
+    barsHTML+='<div class="print-bar-col">'
+      +'<div class="print-bar-val">'+(val>0?val.toLocaleString():'')+'</div>'
+      +'<div class="print-bar" style="height:'+pct+'%"></div></div>';
+    labelsHTML+='<div style="flex:1;font-size:8px;color:#666;text-align:center;">'+m.label+'</div>';
   });
-  document.getElementById("print-chart-bars").innerHTML = barsHTML;
-  document.getElementById("print-chart-labels").innerHTML = labelsHTML;
+  document.getElementById("print-chart-bars").innerHTML=barsHTML;
+  document.getElementById("print-chart-labels").innerHTML=labelsHTML;
 
-  // دالة مساعدة لبناء صفوف الجدول
-  function fillLateTable(bodyId, list) {
-    var tbody = document.getElementById(bodyId);
-    tbody.innerHTML = "";
-    if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون في هذه الفئة</td></tr>';
-      return;
-    }
-    list.forEach(function(s, i) {
-      var late = calcLateMonths(s);
-      var tr = document.createElement("tr");
-      tr.innerHTML = '<td>' + (i+1) + '</td>'
-        + '<td>' + (s.name||"—") + '</td>'
-        + '<td>' + s.phone + '</td>'
-        + '<td>' + s.id + '</td>'
-        + '<td>' + formatDate(s.lastDate) + '</td>'
-        + '<td>' + s.year + '</td>'
-        + '<td>' + late + ' شهر</td>';
+  // جدول المتأخرين أكثر من 3 أشهر — مرتّب من الأقل للأكثر
+  var sorted = late3.slice().sort(function(a,b){ return calcLateMonths(a)-calcLateMonths(b); });
+  var tbody = document.getElementById("print-late-body");
+  tbody.innerHTML="";
+  if (sorted.length===0) {
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون أكثر من 3 أشهر</td></tr>';
+  } else {
+    sorted.forEach(function(s,i){
+      var late=calcLateMonths(s), tr=document.createElement("tr");
+      tr.innerHTML='<td>'+(i+1)+'</td>'
+        +'<td>'+(s.name||"—")+'</td>'
+        +'<td>'+s.phone+'</td>'
+        +'<td>'+s.id+'</td>'
+        +'<td>'+formatDate(s.lastDate)+'</td>'
+        +'<td>'+s.year+'</td>'
+        +'<td>'+late+' شهر</td>';
       tbody.appendChild(tr);
     });
   }
-  fillLateTable("print-late3-body",  pLate3);
-  fillLateTable("print-late6-body",  pLate6);
-  fillLateTable("print-late12-body", pLate12);
 
-  document.getElementById("print-footer").textContent =
-    "صندوق آل قريش التكافلي — تقرير مُنشأ بتاريخ " + dateStr + " — إجمالي " + total + " مشترك";
+  document.getElementById("print-footer").textContent=
+    "صندوق آل قريش التكافلي — تقرير مُنشأ بتاريخ "+dateStr+" — إجمالي "+total+" مشترك";
 
-  document.getElementById("admin-dashboard").style.display = "none";
-  document.getElementById("print-page").style.display = "block";
+  document.getElementById("admin-dashboard").style.display="none";
+  document.getElementById("print-page").style.display="block";
 }
 
 function closePrintPage() {
-  document.getElementById("print-page").style.display = "none";
-  document.getElementById("admin-dashboard").style.display = "block";
+  document.getElementById("print-page").style.display="none";
+  document.getElementById("admin-dashboard").style.display="block";
 }
 </script>
 </body>
