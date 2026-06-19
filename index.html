@@ -492,35 +492,20 @@ input.err { border-color:#e05555; }
   <div class="print-section-title">💰 الاشتراكات المحصّلة (آخر 12 شهر)</div>
   <div class="print-chart-bars" id="print-chart-bars"></div>
   <div style="display:flex;gap:4px;margin-bottom:16px;" id="print-chart-labels"></div>
-  <div class="print-section-title">⚠️ المشتركون المتأخرون (أكثر من 3 أشهر)</div>
-  <table class="print-table" id="print-late-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>الاسم</th>
-        <th>رقم الجوال</th>
-        <th>رقم الهوية</th>
-        <th>آخر سداد</th>
-        <th>السنة المالية</th>
-        <th>التأخر</th>
-      </tr>
-    </thead>
-    <tbody id="print-late-body"></tbody>
+  <div class="print-section-title">⚠️ المشتركون المتأخرون أكثر من 3 أشهر</div>
+  <table class="print-table">
+    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
+    <tbody id="print-late3-body"></tbody>
   </table>
-  <div class="print-section-title">📋 جميع المشتركين</div>
-  <table class="print-table" id="print-all-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>الاسم</th>
-        <th>رقم الجوال</th>
-        <th>رقم الهوية</th>
-        <th>آخر سداد</th>
-        <th>السنة المالية</th>
-        <th>الحالة</th>
-      </tr>
-    </thead>
-    <tbody id="print-all-body"></tbody>
+  <div class="print-section-title">🔴 المشتركون المتأخرون أكثر من 6 أشهر</div>
+  <table class="print-table">
+    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
+    <tbody id="print-late6-body"></tbody>
+  </table>
+  <div class="print-section-title">🚨 المشتركون المتأخرون أكثر من سنة</div>
+  <table class="print-table">
+    <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>التأخر</th></tr></thead>
+    <tbody id="print-late12-body"></tbody>
   </table>
   <div class="print-footer" id="print-footer"></div>
 </div>
@@ -845,13 +830,15 @@ function openPrintPage() {
   document.getElementById("print-chart-bars").innerHTML = barsHTML;
   document.getElementById("print-chart-labels").innerHTML = labelsHTML;
 
-  // جدول المتأخرين (يستخدم pLate3 المحسوبة محلياً)
-  var lateBody = document.getElementById("print-late-body");
-  lateBody.innerHTML = "";
-  if (pLate3.length === 0) {
-    lateBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون أكثر من 3 أشهر</td></tr>';
-  } else {
-    pLate3.forEach(function(s, i) {
+  // دالة مساعدة لبناء صفوف الجدول
+  function fillLateTable(bodyId, list) {
+    var tbody = document.getElementById(bodyId);
+    tbody.innerHTML = "";
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون في هذه الفئة</td></tr>';
+      return;
+    }
+    list.forEach(function(s, i) {
       var late = calcLateMonths(s);
       var tr = document.createElement("tr");
       tr.innerHTML = '<td>' + (i+1) + '</td>'
@@ -861,25 +848,12 @@ function openPrintPage() {
         + '<td>' + formatDate(s.lastDate) + '</td>'
         + '<td>' + s.year + '</td>'
         + '<td>' + late + ' شهر</td>';
-      lateBody.appendChild(tr);
+      tbody.appendChild(tr);
     });
   }
-
-  // جدول كل المشتركين
-  var allBody = document.getElementById("print-all-body");
-  allBody.innerHTML = "";
-  dashData.forEach(function(s, i) {
-    var statusText = s.active ? "نشط ✅" : "غير نشط ⚠️";
-    var tr = document.createElement("tr");
-    tr.innerHTML = '<td>' + (i+1) + '</td>'
-      + '<td>' + (s.name||"—") + '</td>'
-      + '<td>' + s.phone + '</td>'
-      + '<td>' + s.id + '</td>'
-      + '<td>' + formatDate(s.lastDate) + '</td>'
-      + '<td>' + s.year + '</td>'
-      + '<td>' + statusText + '</td>';
-    allBody.appendChild(tr);
-  });
+  fillLateTable("print-late3-body",  pLate3);
+  fillLateTable("print-late6-body",  pLate6);
+  fillLateTable("print-late12-body", pLate12);
 
   document.getElementById("print-footer").textContent =
     "صندوق آل قريش التكافلي — تقرير مُنشأ بتاريخ " + dateStr + " — إجمالي " + total + " مشترك";
