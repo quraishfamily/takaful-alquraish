@@ -766,7 +766,8 @@ function buildWaLink(sub, lateMonths) {
   var name = sub.name || "المشترك الكريم";
   var msg = "السلام عليكم " + name + " ،\n"
     + "نُذكّرك بأن اشتراكك في صندوق آل قريش التكافلي قد تأخّر لمدة " + lateMonths + " شهر.\n"
-    + "يُرجى الإسراع بالسداد والتواصل مع إدارة الصندوق.\nشكراً 🤝";
+    + "يُرجى الإسراع بالسداد عبر الموقع العائلي: www.myquraish.com\n"
+    + "أو التواصل مع إدارة الصندوق.\nشكراً 🤝";
   return "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg);
 }
 
@@ -808,15 +809,25 @@ function openPrintPage() {
 
   document.getElementById("print-date-label").textContent = "تاريخ التقرير: " + dateStr;
 
+  // إعادة حساب القوائم من dashData مباشرة (لضمان دقة البيانات)
+  var pLate3 = [], pLate6 = [], pLate12 = [];
+  dashData.forEach(function(s) {
+    if (s.active) return;
+    var late = calcLateMonths(s);
+    if (late > 3)  pLate3.push(s);
+    if (late > 6)  pLate6.push(s);
+    if (late > 12) pLate12.push(s);
+  });
+
   // إحصاءات
   var total = dashData.length;
   var active = dashData.filter(function(s){ return s.active; }).length;
   document.getElementById("print-stats").innerHTML =
-    '<div class="print-stat"><div class="print-stat-num">' + total  + '</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + active + '</div><div class="print-stat-label">نشط</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + _late3.length  + '</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + _late6.length  + '</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
-  + '<div class="print-stat"><div class="print-stat-num">' + _late12.length + '</div><div class="print-stat-label">متأخر +سنة</div></div>';
+    '<div class="print-stat"><div class="print-stat-num">' + total   + '</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
+  + '<div class="print-stat"><div class="print-stat-num">' + active  + '</div><div class="print-stat-label">نشط</div></div>'
+  + '<div class="print-stat"><div class="print-stat-num">' + pLate3.length  + '</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
+  + '<div class="print-stat"><div class="print-stat-num">' + pLate6.length  + '</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
+  + '<div class="print-stat"><div class="print-stat-num">' + pLate12.length + '</div><div class="print-stat-label">متأخر +سنة</div></div>';
 
   // رسم بياني للطباعة
   var maxVal = Math.max.apply(null, _chartValues) || 1;
@@ -834,23 +845,24 @@ function openPrintPage() {
   document.getElementById("print-chart-bars").innerHTML = barsHTML;
   document.getElementById("print-chart-labels").innerHTML = labelsHTML;
 
-  // جدول المتأخرين
+  // جدول المتأخرين (يستخدم pLate3 المحسوبة محلياً)
   var lateBody = document.getElementById("print-late-body");
   lateBody.innerHTML = "";
-  _late3.forEach(function(s, i) {
-    var late = calcLateMonths(s);
-    var tr = document.createElement("tr");
-    tr.innerHTML = '<td>' + (i+1) + '</td>'
-      + '<td>' + (s.name||"—") + '</td>'
-      + '<td>' + s.phone + '</td>'
-      + '<td>' + s.id + '</td>'
-      + '<td>' + formatDate(s.lastDate) + '</td>'
-      + '<td>' + s.year + '</td>'
-      + '<td>' + late + ' شهر</td>';
-    lateBody.appendChild(tr);
-  });
-  if (_late3.length === 0) {
-    lateBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون</td></tr>';
+  if (pLate3.length === 0) {
+    lateBody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;">لا يوجد متأخرون أكثر من 3 أشهر</td></tr>';
+  } else {
+    pLate3.forEach(function(s, i) {
+      var late = calcLateMonths(s);
+      var tr = document.createElement("tr");
+      tr.innerHTML = '<td>' + (i+1) + '</td>'
+        + '<td>' + (s.name||"—") + '</td>'
+        + '<td>' + s.phone + '</td>'
+        + '<td>' + s.id + '</td>'
+        + '<td>' + formatDate(s.lastDate) + '</td>'
+        + '<td>' + s.year + '</td>'
+        + '<td>' + late + ' شهر</td>';
+      lateBody.appendChild(tr);
+    });
   }
 
   // جدول كل المشتركين
