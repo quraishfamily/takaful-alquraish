@@ -287,9 +287,13 @@ input.err { border-color:#e05555; }
 
 /* ===== صفحة الطباعة ===== */
 @media print {
-  body { background:#fff !important; display:block !important; padding:0 !important; }
-  .container, #admin-icon, #pin-modal, #admin-dashboard { display:none !important; }
-  #print-page { display:block !important; }
+  body { background:#fff !important; display:block !important; padding:0 !important; margin:0 !important; }
+  .container,
+  #admin-icon,
+  #pin-modal,
+  #admin-dashboard,
+  #report-modal { display:none !important; }
+  #print-page { display:block !important; width:100% !important; position:static !important; }
   .print-no-print { display:none !important; }
 }
 #print-page { display:none; font-family:Tahoma,sans-serif; direction:rtl; padding:24px; background:#fff; color:#111; }
@@ -991,6 +995,19 @@ function closePrintPage() {
   document.getElementById("print-page").style.display="none";
   document.getElementById("admin-dashboard").style.display="block";
 }
+
+// إخفاء كل شيء عدا التقرير عند الطباعة
+window.addEventListener("beforeprint", function() {
+  document.querySelector(".container").style.display = "none";
+  document.getElementById("admin-dashboard").style.display = "none";
+  document.getElementById("admin-icon").style.display = "none";
+  document.getElementById("report-modal").style.display = "none";
+  document.getElementById("print-page").style.display = "block";
+});
+window.addEventListener("afterprint", function() {
+  document.querySelector(".container").style.display = "";
+  document.getElementById("admin-icon").style.display = "";
+});
 </script>
 </body>
 </html>
