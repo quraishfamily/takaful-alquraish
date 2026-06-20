@@ -246,6 +246,45 @@ input.err { border-color:#e05555; }
 }
 @keyframes spin { to { transform:rotate(360deg); } }
 
+/* ===== مودال خيارات التقرير ===== */
+#report-modal {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.75); z-index:400;
+  align-items:center; justify-content:center;
+}
+#report-modal.open { display:flex; }
+.report-box {
+  background:linear-gradient(135deg,#0d1f3c,#1a3a5c);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:20px; padding:28px; width:340px;
+}
+.report-box-title { color:#f0d080; font-size:16px; font-weight:bold; margin-bottom:6px; }
+.report-box-sub { color:#8ab4d4; font-size:12px; margin-bottom:20px; }
+.report-option {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:12px; margin-bottom:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05); cursor:pointer;
+  transition:background 0.15s;
+}
+.report-option:hover { background:rgba(255,255,255,0.1); }
+.report-option input[type=checkbox] { width:18px; height:18px; cursor:pointer; accent-color:#f0d080; }
+.report-option label { color:#c8dff0; font-size:14px; cursor:pointer; flex:1; }
+.report-option .opt-sub { color:#8ab4d4; font-size:11px; margin-top:2px; }
+.report-actions { display:flex; gap:10px; margin-top:18px; }
+.btn-gen-report {
+  flex:1; padding:12px; border-radius:12px; border:none;
+  background:linear-gradient(135deg,#c9a84c,#f0d080);
+  color:#1a1a1a; font-size:14px; font-weight:bold;
+  cursor:pointer; font-family:Tahoma,sans-serif;
+}
+.btn-cancel-report {
+  padding:12px 18px; border-radius:12px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:transparent; color:#8ab4d4;
+  font-size:14px; cursor:pointer; font-family:Tahoma,sans-serif;
+}
+
 /* ===== صفحة الطباعة ===== */
 @media print {
   body { background:#fff !important; display:block !important; padding:0 !important; }
@@ -432,6 +471,51 @@ input.err { border-color:#e05555; }
   </div>
 </div>
 
+<!-- مودال خيارات التقرير -->
+<div id="report-modal">
+  <div class="report-box">
+    <div class="report-box-title">🖨️ اختر محتوى التقرير</div>
+    <div class="report-box-sub">اختر ما تريد تضمينه في التقرير</div>
+
+    <div class="report-option">
+      <input type="checkbox" id="opt-late3" checked>
+      <div>
+        <label for="opt-late3">المتأخرون أكثر من 3 أشهر</label>
+        <div class="opt-sub">مرتّبون من الأقل إلى الأكثر تأخراً</div>
+      </div>
+    </div>
+
+    <div class="report-option">
+      <input type="checkbox" id="opt-late6">
+      <div>
+        <label for="opt-late6">المتأخرون أكثر من 6 أشهر</label>
+        <div class="opt-sub">مرتّبون من الأقل إلى الأكثر تأخراً</div>
+      </div>
+    </div>
+
+    <div class="report-option">
+      <input type="checkbox" id="opt-late12">
+      <div>
+        <label for="opt-late12">المتأخرون أكثر من سنة</label>
+        <div class="opt-sub">مرتّبون من الأقل إلى الأكثر تأخراً</div>
+      </div>
+    </div>
+
+    <div class="report-option">
+      <input type="checkbox" id="opt-all">
+      <div>
+        <label for="opt-all">جميع المشتركين</label>
+        <div class="opt-sub">مرتّبون من الأقل تأخراً إلى الأكثر</div>
+      </div>
+    </div>
+
+    <div class="report-actions">
+      <button class="btn-gen-report" onclick="generateReport()">إنشاء التقرير</button>
+      <button class="btn-cancel-report" onclick="closeReportModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- صفحة الطباعة -->
 <div id="print-page">
   <div class="print-no-print">
@@ -447,15 +531,34 @@ input.err { border-color:#e05555; }
   <div class="print-section-title">💰 الاشتراكات المحصّلة (آخر 12 شهر)</div>
   <div class="print-chart-bars" id="print-chart-bars"></div>
   <div style="display:flex;gap:4px;margin-bottom:16px;" id="print-chart-labels"></div>
-  <div class="print-section-title">⚠️ المشتركون المتأخرون أكثر من 3 أشهر — مرتّبون من الأقل إلى الأكثر</div>
-  <table class="print-table">
-    <thead>
-      <tr>
-        <th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th>
-      </tr>
-    </thead>
-    <tbody id="print-late-body"></tbody>
-  </table>
+  <div id="print-sec-late3" style="display:none;">
+    <div class="print-section-title">⚠️ المتأخرون أكثر من 3 أشهر — مرتّبون من الأقل إلى الأكثر</div>
+    <table class="print-table">
+      <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th></tr></thead>
+      <tbody id="print-late3-body"></tbody>
+    </table>
+  </div>
+  <div id="print-sec-late6" style="display:none;">
+    <div class="print-section-title">🔴 المتأخرون أكثر من 6 أشهر — مرتّبون من الأقل إلى الأكثر</div>
+    <table class="print-table">
+      <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th></tr></thead>
+      <tbody id="print-late6-body"></tbody>
+    </table>
+  </div>
+  <div id="print-sec-late12" style="display:none;">
+    <div class="print-section-title">🚨 المتأخرون أكثر من سنة — مرتّبون من الأقل إلى الأكثر</div>
+    <table class="print-table">
+      <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th></tr></thead>
+      <tbody id="print-late12-body"></tbody>
+    </table>
+  </div>
+  <div id="print-sec-all" style="display:none;">
+    <div class="print-section-title">📋 جميع المشتركين — مرتّبون من الأقل تأخراً إلى الأكثر</div>
+    <table class="print-table">
+      <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>الحالة</th><th>أشهر التأخر</th></tr></thead>
+      <tbody id="print-all-body"></tbody>
+    </table>
+  </div>
   <div class="print-footer" id="print-footer"></div>
 </div>
 
@@ -724,6 +827,101 @@ function showLate(months, btn) {
 
 /* ======= صفحة الطباعة ======= */
 function openPrintPage() {
+  if (!dashData) return;
+  document.getElementById("report-modal").classList.add("open");
+}
+function closeReportModal() {
+  document.getElementById("report-modal").classList.remove("open");
+}
+function generateReport() {
+  closeReportModal();
+  var showLate3  = document.getElementById("opt-late3").checked;
+  var showLate6  = document.getElementById("opt-late6").checked;
+  var showLate12 = document.getElementById("opt-late12").checked;
+  var showAll    = document.getElementById("opt-all").checked;
+
+  var now = new Date();
+  var arMonths=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  var dateStr = now.getDate()+" "+arMonths[now.getMonth()]+" "+now.getFullYear();
+  document.getElementById("print-date-label").textContent = "تاريخ التقرير: "+dateStr;
+
+  // حساب البيانات
+  var total=dashData.length, active=0, late3=[], late6=[], late12=[];
+  dashData.forEach(function(s) {
+    if (s.active){active++;return;}
+    var late=calcLateMonths(s);
+    if (late>3)  late3.push(s);
+    if (late>6)  late6.push(s);
+    if (late>12) late12.push(s);
+  });
+  var sortFn = function(a,b){return calcLateMonths(a)-calcLateMonths(b);};
+
+  // الإحصاءات
+  document.getElementById("print-stats").innerHTML=
+    '<div class="print-stat"><div class="print-stat-num">'+total+'</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+active+'</div><div class="print-stat-label">نشط</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late3.length+'</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late6.length+'</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
+   +'<div class="print-stat"><div class="print-stat-num">'+late12.length+'</div><div class="print-stat-label">متأخر +سنة</div></div>';
+
+  // الرسم البياني
+  var maxVal=Math.max.apply(null,_chartValues)||1;
+  var barsHTML="", labelsHTML="";
+  _chartLabels.forEach(function(m,i){
+    var val=_chartValues[i], pct=Math.round((val/maxVal)*100);
+    if (pct<2&&val>0) pct=2;
+    barsHTML+='<div class="print-bar-col"><div class="print-bar-val">'+(val>0?val.toLocaleString():'')+'</div>'
+      +'<div class="print-bar" style="height:'+pct+'%"></div></div>';
+    labelsHTML+='<div style="flex:1;font-size:8px;color:#666;text-align:center;">'+m.label+'</div>';
+  });
+  document.getElementById("print-chart-bars").innerHTML=barsHTML;
+  document.getElementById("print-chart-labels").innerHTML=labelsHTML;
+
+  // دالة بناء جدول
+  function buildTable(bodyId, list, showStatus) {
+    var tbody=document.getElementById(bodyId); tbody.innerHTML="";
+    if (list.length===0) {
+      tbody.innerHTML='<tr><td colspan="'+(showStatus?8:7)+'" style="text-align:center;color:#aaa;">لا يوجد بيانات</td></tr>'; return;
+    }
+    list.forEach(function(s,i){
+      var late=calcLateMonths(s), tr=document.createElement("tr");
+      var statusCell = showStatus ? '<td>'+(s.active?"نشط ✅":"غير نشط ⚠️")+'</td>' : '';
+      var lateCell = showStatus ? '<td>'+(s.active?'—':late+' شهر')+'</td>' : '<td>'+late+' شهر</td>';
+      tr.innerHTML='<td>'+(i+1)+'</td><td>'+(s.name||"—")+'</td><td>'+s.phone+'</td><td>'+s.id+'</td>'
+        +'<td>'+formatDate(s.lastDate)+'</td><td>'+s.year+'</td>'+statusCell+lateCell;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // إظهار/إخفاء الأقسام وملء البيانات
+  var sec3=document.getElementById("print-sec-late3");
+  var sec6=document.getElementById("print-sec-late6");
+  var sec12=document.getElementById("print-sec-late12");
+  var secAll=document.getElementById("print-sec-all");
+
+  sec3.style.display   = showLate3  ? "block" : "none";
+  sec6.style.display   = showLate6  ? "block" : "none";
+  sec12.style.display  = showLate12 ? "block" : "none";
+  secAll.style.display = showAll    ? "block" : "none";
+
+  if (showLate3)  buildTable("print-late3-body",  late3.slice().sort(sortFn), false);
+  if (showLate6)  buildTable("print-late6-body",  late6.slice().sort(sortFn), false);
+  if (showLate12) buildTable("print-late12-body", late12.slice().sort(sortFn), false);
+  if (showAll) {
+    var allSorted = dashData.slice().sort(function(a,b){
+      var la=a.active?-1:calcLateMonths(a), lb=b.active?-1:calcLateMonths(b);
+      return la-lb;
+    });
+    buildTable("print-all-body", allSorted, true);
+  }
+
+  document.getElementById("print-footer").textContent=
+    "صندوق آل قريش التكافلي — تقرير مُنشأ بتاريخ "+dateStr+" — إجمالي "+total+" مشترك";
+
+  document.getElementById("admin-dashboard").style.display="none";
+  document.getElementById("print-page").style.display="block";
+}
+function _OLD_openPrintPage_UNUSED() {
   if (!dashData) return;
   var now = new Date();
   var arMonths=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
