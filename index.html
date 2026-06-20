@@ -490,14 +490,12 @@ input.err { border-color:#e05555; }
           </div>
         </div>
       </div>
-      <!-- مجموع السنوات وجراف المقارنة -->
+      <!-- مجموع السنة الحالية -->
       <div class="yearly-section">
-        <div class="yearly-title">💵 إجمالي الأموال المحصّلة — آخر 3 سنوات</div>
-        <div class="yearly-cards" id="yearly-cards"></div>
-        <div class="yearly-title" style="margin-top:4px;">📈 مقارنة الاشتراكات الشهرية بين السنوات</div>
-        <div class="compare-chart">
-          <div class="compare-months" id="compare-months"></div>
-          <div class="compare-legend" id="compare-legend"></div>
+        <div class="yearly-title">💵 إجمالي الأموال المحصّلة — السنة الحالية</div>
+        <div id="yearly-current" style="text-align:center;padding:16px 0;">
+          <div id="yearly-amount" style="font-size:38px;font-weight:bold;color:#f0d080;">—</div>
+          <div id="yearly-sub" style="font-size:13px;color:#8ab4d4;margin-top:6px;">ريال</div>
         </div>
       </div>
 
@@ -816,89 +814,18 @@ function renderChart(subs) {
 }
 
 function renderYearly(subs) {
-  var now = new Date();
-  var currentYear = now.getFullYear();
-  var years = [currentYear - 2, currentYear - 1, currentYear];
-  var arMonths = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-  var colors = ["#7ab4f0", "#f0d080", "#70e070"];
-
-  // حساب الإجماليات السنوية والشهرية
-  var yearData = {};
-  years.forEach(function(y) {
-    yearData[y] = { total: 0, count: 0, months: new Array(12).fill(0) };
-  });
-
+  var currentYear = new Date().getFullYear();
+  var total = 0, count = 0;
   subs.forEach(function(s) {
     var dt = s.lastDate ? new Date(s.lastDate) : null;
     if (!dt || isNaN(dt)) return;
-    var y = dt.getFullYear(), m = dt.getMonth();
-    var amount = parseFloat(s.amount) || 0;
-    if (yearData[y]) {
-      yearData[y].total += amount;
-      yearData[y].count++;
-      yearData[y].months[m] += amount;
+    if (dt.getFullYear() === currentYear) {
+      total += parseFloat(s.amount) || 0;
+      count++;
     }
   });
-
-  // بطاقات السنوات
-  var cardsEl = document.getElementById("yearly-cards");
-  cardsEl.innerHTML = "";
-  years.forEach(function(y, i) {
-    var d = yearData[y];
-    var card = document.createElement("div");
-    card.className = "yearly-card";
-    card.style.borderColor = colors[i] + "44";
-    card.innerHTML =
-      '<div class="yearly-card-year">' + y + '</div>'
-      + '<div class="yearly-card-amount" style="color:' + colors[i] + '">'
-      + d.total.toLocaleString() + '</div>'
-      + '<div class="yearly-card-sub">ريال &bull; ' + d.count + ' عملية</div>';
-    cardsEl.appendChild(card);
-  });
-
-  // جراف المقارنة الشهرية
-  var maxVal = 0;
-  years.forEach(function(y) {
-    yearData[y].months.forEach(function(v) { if (v > maxVal) maxVal = v; });
-  });
-  if (!maxVal) maxVal = 1;
-
-  var monthsEl = document.getElementById("compare-months");
-  monthsEl.innerHTML = "";
-  for (var m = 0; m < 12; m++) {
-    var col = document.createElement("div");
-    col.className = "compare-month-col";
-    var barsDiv = document.createElement("div");
-    barsDiv.className = "compare-bars";
-    years.forEach(function(y, i) {
-      var val = yearData[y].months[m];
-      var pct = Math.round((val / maxVal) * 100);
-      if (pct < 2 && val > 0) pct = 2;
-      var bar = document.createElement("div");
-      bar.className = "compare-bar";
-      bar.style.height = pct + "%";
-      bar.style.background = colors[i];
-      bar.style.opacity = "0.85";
-      bar.innerHTML = '<div class="compare-tooltip">' + y + '<br>' + arMonths[m] + '<br>' + val.toLocaleString() + ' ريال</div>';
-      barsDiv.appendChild(bar);
-    });
-    var label = document.createElement("div");
-    label.className = "compare-month-label";
-    label.textContent = arMonths[m].substring(0, 3);
-    col.appendChild(barsDiv);
-    col.appendChild(label);
-    monthsEl.appendChild(col);
-  }
-
-  // التوضيح
-  var legendEl = document.getElementById("compare-legend");
-  legendEl.innerHTML = "";
-  years.forEach(function(y, i) {
-    var item = document.createElement("div");
-    item.className = "legend-item";
-    item.innerHTML = '<div class="legend-dot" style="background:' + colors[i] + '"></div>' + y;
-    legendEl.appendChild(item);
-  });
+  document.getElementById("yearly-amount").textContent = total.toLocaleString();
+  document.getElementById("yearly-sub").textContent = "ريال &bull; " + count + " عملية سداد خلال عام " + currentYear;
 }
 
 function buildWaLink(sub, lateMonths) {
