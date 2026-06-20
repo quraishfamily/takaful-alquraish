@@ -825,7 +825,7 @@ function renderYearly(subs) {
     }
   });
   document.getElementById("yearly-amount").textContent = total.toLocaleString();
-  document.getElementById("yearly-sub").textContent = "ريال &bull; " + count + " عملية سداد خلال عام " + currentYear;
+  document.getElementById("yearly-sub").innerHTML = "ريال &bull; " + count + " عملية سداد خلال عام " + currentYear;
 }
 
 function buildWaLink(sub, lateMonths) {
