@@ -287,12 +287,10 @@ input.err { border-color:#e05555; }
 
 /* ===== صفحة الطباعة ===== */
 @media print {
-  body * { display:none !important; }
-  body { background:#fff !important; padding:0 !important; margin:0 !important; }
-  #print-page,
-  #print-page * { display:revert !important; }
-  .print-no-print,
-  .print-no-print * { display:none !important; }
+  body > *:not(#print-page) { display:none !important; visibility:hidden !important; }
+  #print-page { display:block !important; visibility:visible !important; position:fixed !important; top:0 !important; left:0 !important; width:100% !important; background:#fff !important; z-index:9999 !important; padding:24px !important; }
+  #print-page * { visibility:visible !important; }
+  .print-no-print { display:none !important; }
 }
 #print-page { display:none; font-family:Tahoma,sans-serif; direction:rtl; padding:24px; background:#fff; color:#111; }
 .print-header { text-align:center; border-bottom:2px solid #c9a84c; padding-bottom:14px; margin-bottom:20px; }
@@ -446,7 +444,7 @@ input.err { border-color:#e05555; }
       <div class="stats-grid">
         <div class="stat-card blue"><div class="stat-num" id="d-total">—</div><div class="stat-label">إجمالي المشتركين</div></div>
         <div class="stat-card green"><div class="stat-num" id="d-active">—</div><div class="stat-label">اشتراك نشط</div></div>
-        <div class="stat-card orange"><div class="stat-num" id="d-late3">—</div><div class="stat-label">متأخر أكثر من 3 أشهر</div></div>
+
         <div class="stat-card red"><div class="stat-num" id="d-late6">—</div><div class="stat-label">متأخر أكثر من 6 أشهر</div></div>
         <div class="stat-card purple" style="grid-column:span 2;"><div class="stat-num" id="d-late12">—</div><div class="stat-label">متأخر أكثر من سنة كاملة</div></div>
       </div>
@@ -463,7 +461,7 @@ input.err { border-color:#e05555; }
       <div class="late-section">
         <div class="late-title">📋 قائمة المشتركين المتأخرين</div>
         <div class="late-tabs">
-          <button class="late-tab active" onclick="showLate(3,this)">أكثر من 3 أشهر</button>
+          <button class="late-tab active" onclick="showLate(6,this)">أكثر من 6 أشهر</button>
           <button class="late-tab" onclick="showLate(6,this)">أكثر من 6 أشهر</button>
           <button class="late-tab" onclick="showLate(12,this)">أكثر من سنة</button>
         </div>
@@ -478,14 +476,6 @@ input.err { border-color:#e05555; }
   <div class="report-box">
     <div class="report-box-title">🖨️ اختر محتوى التقرير</div>
     <div class="report-box-sub">اختر ما تريد تضمينه في التقرير</div>
-
-    <div class="report-option">
-      <input type="checkbox" id="opt-late3" checked>
-      <div>
-        <label for="opt-late3">المتأخرون أكثر من 3 أشهر</label>
-        <div class="opt-sub">مرتّبون من الأقل إلى الأكثر تأخراً</div>
-      </div>
-    </div>
 
     <div class="report-option">
       <input type="checkbox" id="opt-late6">
@@ -522,7 +512,7 @@ input.err { border-color:#e05555; }
 <div id="print-page">
   <div class="print-no-print">
     <button class="btn-back-dash" onclick="closePrintPage()">← العودة للداشبورد</button>
-    <button class="btn-do-print" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+    <button class="btn-do-print" onclick="printReport()">🖨️ طباعة / حفظ PDF</button>
   </div>
   <div class="print-header">
     <h1>🤝 صندوق آل قريش التكافلي</h1>
@@ -533,13 +523,7 @@ input.err { border-color:#e05555; }
   <div class="print-section-title">💰 الاشتراكات المحصّلة (آخر 12 شهر)</div>
   <div class="print-chart-bars" id="print-chart-bars"></div>
   <div style="display:flex;gap:4px;margin-bottom:16px;" id="print-chart-labels"></div>
-  <div id="print-sec-late3" style="display:none;">
-    <div class="print-section-title">⚠️ المتأخرون أكثر من 3 أشهر — مرتّبون من الأقل إلى الأكثر</div>
-    <table class="print-table">
-      <thead><tr><th>#</th><th>الاسم</th><th>رقم الجوال</th><th>رقم الهوية</th><th>آخر سداد</th><th>السنة المالية</th><th>أشهر التأخر</th></tr></thead>
-      <tbody id="print-late3-body"></tbody>
-    </table>
-  </div>
+
   <div id="print-sec-late6" style="display:none;">
     <div class="print-section-title">🔴 المتأخرون أكثر من 6 أشهر — مرتّبون من الأقل إلى الأكثر</div>
     <table class="print-table">
@@ -748,7 +732,6 @@ function renderDash(subs) {
   });
   document.getElementById("d-total").textContent  = total;
   document.getElementById("d-active").textContent = active;
-  document.getElementById("d-late3").textContent  = late3;
   document.getElementById("d-late6").textContent  = late6;
   document.getElementById("d-late12").textContent = late12;
   renderChart(subs);
@@ -837,7 +820,6 @@ function closeReportModal() {
 }
 function generateReport() {
   closeReportModal();
-  var showLate3  = document.getElementById("opt-late3").checked;
   var showLate6  = document.getElementById("opt-late6").checked;
   var showLate12 = document.getElementById("opt-late12").checked;
   var showAll    = document.getElementById("opt-all").checked;
@@ -862,7 +844,6 @@ function generateReport() {
   document.getElementById("print-stats").innerHTML=
     '<div class="print-stat"><div class="print-stat-num">'+total+'</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+active+'</div><div class="print-stat-label">نشط</div></div>'
-   +'<div class="print-stat"><div class="print-stat-num">'+late3.length+'</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+late6.length+'</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+late12.length+'</div><div class="print-stat-label">متأخر +سنة</div></div>';
 
@@ -896,17 +877,17 @@ function generateReport() {
   }
 
   // إظهار/إخفاء الأقسام وملء البيانات
-  var sec3=document.getElementById("print-sec-late3");
+  var sec3=null;
   var sec6=document.getElementById("print-sec-late6");
   var sec12=document.getElementById("print-sec-late12");
   var secAll=document.getElementById("print-sec-all");
 
-  sec3.style.display   = showLate3  ? "block" : "none";
+  if(sec3) sec3.style.display = "none";
   sec6.style.display   = showLate6  ? "block" : "none";
   sec12.style.display  = showLate12 ? "block" : "none";
   secAll.style.display = showAll    ? "block" : "none";
 
-  if (showLate3)  buildTable("print-late3-body",  late3.slice().sort(sortFn), false);
+
   if (showLate6)  buildTable("print-late6-body",  late6.slice().sort(sortFn), false);
   if (showLate12) buildTable("print-late12-body", late12.slice().sort(sortFn), false);
   if (showAll) {
@@ -944,7 +925,6 @@ function _OLD_openPrintPage_UNUSED() {
   document.getElementById("print-stats").innerHTML=
     '<div class="print-stat"><div class="print-stat-num">'+total+'</div><div class="print-stat-label">إجمالي المشتركين</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+active+'</div><div class="print-stat-label">نشط</div></div>'
-   +'<div class="print-stat"><div class="print-stat-num">'+late3.length+'</div><div class="print-stat-label">متأخر +3 أشهر</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+late6.length+'</div><div class="print-stat-label">متأخر +6 أشهر</div></div>'
    +'<div class="print-stat"><div class="print-stat-num">'+late12.length+'</div><div class="print-stat-label">متأخر +سنة</div></div>';
 
@@ -994,18 +974,44 @@ function closePrintPage() {
   document.getElementById("admin-dashboard").style.display="block";
 }
 
-// إخفاء كل شيء عدا التقرير عند الطباعة
-window.addEventListener("beforeprint", function() {
-  document.querySelector(".container").style.display = "none";
-  document.getElementById("admin-dashboard").style.display = "none";
-  document.getElementById("admin-icon").style.display = "none";
-  document.getElementById("report-modal").style.display = "none";
-  document.getElementById("print-page").style.display = "block";
-});
-window.addEventListener("afterprint", function() {
-  document.querySelector(".container").style.display = "";
-  document.getElementById("admin-icon").style.display = "";
-});
+// فتح نافذة طباعة مستقلة
+function printReport() {
+  var printContent = document.getElementById("print-page").innerHTML;
+  var win = window.open("", "_blank", "width=900,height=700");
+  win.document.write(
+    '<!DOCTYPE html><html dir="rtl" lang="ar"><head>'
+    + '<meta charset="UTF-8">'
+    + '<title>تقرير صندوق آل قريش التكافلي</title>'
+    + '<style>'
+    + 'body{font-family:Tahoma,sans-serif;direction:rtl;padding:24px;background:#fff;color:#111;margin:0;}'
+    + '.print-no-print{text-align:center;margin-bottom:16px;}'
+    + '.btn-do-print{padding:10px 24px;border-radius:10px;border:none;background:linear-gradient(135deg,#c9a84c,#f0d080);color:#1a1a1a;font-size:14px;font-weight:bold;cursor:pointer;font-family:Tahoma,sans-serif;}'
+    + '.print-header{text-align:center;border-bottom:2px solid #c9a84c;padding-bottom:14px;margin-bottom:20px;}'
+    + '.print-header h1{font-size:20px;color:#0a1628;}'
+    + '.print-header p{font-size:12px;color:#666;margin-top:4px;}'
+    + '.print-stats{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}'
+    + '.print-stat{flex:1;min-width:90px;border:1px solid #ddd;border-radius:8px;padding:10px;text-align:center;}'
+    + '.print-stat-num{font-size:22px;font-weight:bold;color:#0a1628;}'
+    + '.print-stat-label{font-size:10px;color:#666;margin-top:3px;}'
+    + '.print-section-title{font-size:13px;font-weight:bold;color:#0a1628;border-right:3px solid #c9a84c;padding-right:8px;margin:18px 0 10px;}'
+    + '.print-chart-bars{display:flex;align-items:flex-end;gap:4px;height:100px;border-bottom:1px solid #ccc;margin-bottom:4px;}'
+    + '.print-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;}'
+    + '.print-bar{width:100%;background:#c9a84c;border-radius:3px 3px 0 0;min-height:2px;}'
+    + '.print-bar-val{font-size:7px;color:#333;text-align:center;}'
+    + '.print-table{width:100%;border-collapse:collapse;font-size:11px;margin-bottom:16px;}'
+    + '.print-table th{background:#0a1628;color:#f0d080;padding:7px 8px;text-align:right;}'
+    + '.print-table td{padding:6px 8px;border-bottom:1px solid #eee;}'
+    + '.print-table tr:nth-child(even) td{background:#f9f9f9;}'
+    + '.print-footer{text-align:center;font-size:10px;color:#aaa;margin-top:20px;border-top:1px solid #eee;padding-top:10px;}'
+    + '@media print{.print-no-print{display:none;}}'
+    + '<\/style>'
+    + '<\/head><body>'
+    + '<div class="print-no-print"><button class="btn-do-print" onclick="window.print()">🖨️ طباعة / حفظ PDF<\/button><\/div>'
+    + printContent
+    + '<\/body><\/html>'
+  );
+  win.document.close();
+}
 </script>
 </body>
 </html>
